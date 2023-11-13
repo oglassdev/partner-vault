@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .sidebar-button {
+        @apply w-full hover:bg-gray-200 rounded-lg flex flex-row px-3 gap-3 py-2 transition-colors dark:hover:bg-gray-800;
+    }
+}
