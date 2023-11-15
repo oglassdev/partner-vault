@@ -1,16 +1,17 @@
 import {createSignal, For, Show} from "solid-js";
-import {A, Outlet} from "@solidjs/router";
+import {A, Outlet, useParams} from "@solidjs/router";
 import {Bookmark, BookUser, GanttChart, LayoutDashboard, Settings, Users, XIcon} from "lucide-solid";
 import Modal from "./Modal.tsx";
 
 export default function TeamWrapper() {
+    let team = useParams().teamId;
     let navs = [
-        { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={18} class={"my-auto"} strokeWidth={2} /> },
-        { name: "Partners", href: "/partners", icon: <BookUser size={18} class={"my-auto"} strokeWidth={2} /> },
-        { name: "Roles", href: "/roles", icon: <GanttChart size={18} class={"my-auto"} strokeWidth={2} /> },
-        { name: "Tags", href: "/tags", icon: <Bookmark size={18} class={"my-auto"} strokeWidth={2} /> },
-        { name: "Users", href: "/users", icon: <Users size={18} class={"my-auto"} strokeWidth={2} /> },
-        { name: "Settings", href: "/settings", icon: <Settings size={18} class={"my-auto"} strokeWidth={2} /> }
+        { name: "Dashboard", href: `/teams/${team}/`, icon: <LayoutDashboard size={18} class={"my-auto"} strokeWidth={2} /> },
+        { name: "Partners", href: `/teams/${team}/partners`, icon: <BookUser size={18} class={"my-auto"} strokeWidth={2} /> },
+        { name: "Roles", href: `/teams/${team}/roles`, icon: <GanttChart size={18} class={"my-auto"} strokeWidth={2} /> },
+        { name: "Tags", href: `/teams/${team}/tags`, icon: <Bookmark size={18} class={"my-auto"} strokeWidth={2} /> },
+        { name: "Users", href: `/teams/${team}/users`, icon: <Users size={18} class={"my-auto"} strokeWidth={2} /> },
+        { name: "Settings", href: `/teams/${team}/settings`, icon: <Settings size={18} class={"my-auto"} strokeWidth={2} /> }
     ]
     let [modalState,setModalState] = createSignal(false);
     return <div class={"w-full h-screen flex flex-col sm:flex-row"}>
