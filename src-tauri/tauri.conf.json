@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "partner-vault",
+    "productName": "Partner Vault",
     "version": "0.0.0"
   },
   "tauri": {
@@ -29,9 +29,11 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "partner-vault",
+        "title": "Partner Vault",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay"
       }
     ]
   },

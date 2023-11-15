@@ -12,13 +12,16 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@modular-forms/solid": "^0.20.0",
     "@solidjs/router": "^0.9.1",
     "@supabase/supabase-js": "^2.38.4",
     "@tauri-apps/api": "2.0.0-alpha.11",
     "@tauri-apps/plugin-deep-link": "2.0.0-alpha.2",
     "@tauri-apps/plugin-shell": "2.0.0-alpha.3",
     "lucide-solid": "^0.292.0",
-    "solid-js": "^1.8.5"
+    "solid-js": "^1.8.5",
+    "solid-toast": "^0.5.0",
+    "solid-transition-group": "^0.2.3"
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.0.0-alpha.17",
@@ -29,6 +32,7 @@
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
     "vite": "^4.5.0",
-    "vite-plugin-solid": "^2.7.2"
+    "vite-plugin-solid": "^2.7.2",
+    "vite-plugin-solid-svg": "^0.7.0"
   }
 }

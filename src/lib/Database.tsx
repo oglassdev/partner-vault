@@ -6,6 +6,11 @@ export async function getTeams() {
         .from("teams")
         .select()
 }
+export async function getAllowedTeams() {
+    return getSupabaseClient()
+        .from("user_teams")
+        .select()
+}
 export async function getInvites() {
     return getSupabaseClient()
         .from("invites")

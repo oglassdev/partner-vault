@@ -6,4 +6,7 @@
     .sidebar-button {
         @apply w-full hover:bg-gray-200 rounded-lg flex flex-row px-3 gap-3 py-2 transition-colors dark:hover:bg-gray-800;
     }
+    .form-input {
+        @apply border-b border-gray-600 focus:outline-none focus:border-blue-500 transition-colors;
+    }
 }
