@@ -9,4 +9,20 @@
     .form-input {
         @apply border-b border-gray-600 focus:outline-none focus:border-blue-500 transition-colors;
     }
+    .card-default {
+        @apply bg-gray-200 rounded-lg dark:bg-gray-700 text-white;
+    }
+    .background {
+        @apply bg-white dark:bg-gray-800
+    }
+}
+
+body {
+  background: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: rgb(31 41 55);
+  }
 }

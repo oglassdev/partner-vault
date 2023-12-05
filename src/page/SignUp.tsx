@@ -4,7 +4,6 @@ import Apple from "../assets/apple.svg";
 import Google from "../assets/google.svg";
 import {toast} from "solid-toast";
 import {A, useNavigate} from "@solidjs/router";
-import Footer from "../component/Footer.tsx";
 import {createEffect} from "solid-js";
 
 type LoginFormValues = {
@@ -17,13 +16,16 @@ export default function SignUp() {
     let navigate = useNavigate();
 
     createEffect(async () => {
-        if ((await getSupabaseClient().auth.getSession()) != null) {
+        if ((await getSupabaseClient().auth.getSession())?.data?.session != null) {
             navigate("/teams")
             toast.success("Successfully logged in!")
         }
     })
 
     const handleSubmit: SubmitHandler<LoginFormValues> = async (values, _) => {
+        toast.loading("Signing up...", {
+          "duration": 1000  
+        });
         let {data, error} = await getSupabaseClient().auth.signUp({
             email: values.email,
             password: values.password
@@ -34,15 +36,16 @@ export default function SignUp() {
         }
         if (data != null) {
             toast.success("Next step - Verify your email!")
-            navigate("/")
+            navigate("/");
+            return
         }
-
+        toast.error("An unexpected error occurred!")
     };
 
     return (
-        <div class={"flex h-screen w-full"}>
+        <div class={"flex h-screen w-full dark:bg-gray-800"}>
             <div class={"m-auto w-full sm:w-2/3 md:w-3/5 lg:w-1/2 p-8 h-auto pt-8"}>
-                <div class={"font-semibold text-2xl text-center mb-2"}>Create an Account</div>
+                <div class={"font-semibold text-2xl text-center mb-2 dark:text-white"}>Create an Account</div>
                 <Form
                     onSubmit={handleSubmit}
                     class="space-y-2"
@@ -115,10 +118,9 @@ export default function SignUp() {
                             <span>Sign up with Apple</span>
                         </button>
                     </div>
-                    <div class={"text-center"}><span class={"text-gray-500"}>Already have an account?</span> <A href={"/"}><span class={"text-blue-500 underline"}>Sign in</span></A></div>
+                    <div class={"text-center"}><span class={"text-gray-500 dark:text-gray-400"}>Already have an account?</span> <A href={"/"}><span class={"text-blue-500 underline"}>Sign in</span></A></div>
                 </Form>
             </div>
-            <Footer showLeave={false} />
         </div>
     );
 };

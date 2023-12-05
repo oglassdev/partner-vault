@@ -5,7 +5,6 @@ import Google from "../assets/google.svg";
 import {Check} from "lucide-solid";
 import {toast} from "solid-toast";
 import {A, useNavigate} from "@solidjs/router";
-import Footer from "../component/Footer.tsx";
 import {createEffect} from "solid-js";
 
 type LoginFormValues = {
@@ -41,9 +40,9 @@ export default function Login() {
     })
 
     return (
-        <div class={"flex h-screen w-full"}>
+        <div class={"flex h-full w-full dark:bg-gray-800"}>
             <div class={"m-auto w-full sm:w-2/3 md:w-3/5 lg:w-1/2 p-8 h-auto pt-8"}>
-                <div class={"font-semibold text-2xl text-center mb-2"}>Login to Partner Vault</div>
+                <div class={"font-semibold text-2xl text-center mb-2 dark:text-white"}>Login to Partner Vault</div>
                 <Form
                     onSubmit={handleSubmit}
                     class="space-y-2"
@@ -90,7 +89,7 @@ export default function Login() {
                         <label class="flex items-center">
                             <input type="checkbox" class="appearance-none relative peer w-6 h-6 border rounded-lg checked:bg-blue-500"/>
                             <Check class={"absolute hidden peer-checked:block text-white p-0.5"} />
-                            <span class="ml-2 font-medium text-gray-600">Remember me</span>
+                            <span class="ml-2 font-medium text-gray-600 dark:text-gray-400">Remember me</span>
                         </label>
                         <button
                             type="submit"
@@ -121,10 +120,9 @@ export default function Login() {
                             <span>Sign in with Apple</span>
                         </button>
                     </div>
-                    <div class={"text-center"}><span class={"text-gray-500"}>Don't have an account?</span> <A href={"/signup"}><span class={"text-blue-500 underline"}>Sign up</span></A></div>
+                    <div class={"text-center"}><span class={"text-gray-500 dark:text-gray-400"}>Don't have an account?</span> <A href={"/signup"}><span class={"text-blue-500 underline"}>Sign up</span></A></div>
                 </Form>
             </div>
-            <Footer showLeave={false} />
         </div>
     );
 };
