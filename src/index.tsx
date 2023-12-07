@@ -13,7 +13,6 @@ import LoginWrapper from "./component/LoginWrapper.tsx";
 import SignUp from "./page/SignUp.tsx";
 import Teams from "./page/Teams.tsx";
 import Partners from "./page/Partners.tsx";
-import Reports from "./page/Reports.tsx";
 import Tags from "./page/Tags.tsx";
 import Users from "./page/Users.tsx";
 import Settings from "./page/Settings.tsx";
@@ -37,7 +36,6 @@ render(
                     <Route path={"/teams/:teamId"} component={TeamWrapper}>
                         <Route path={"/"} component={Dashboard} />
                         <Route path={"/partners"} component={Partners} />
-                        <Route path={"/reports"} component={Reports} />
                         <Route path={"/tags"} component={Tags} />
                         <Route path={"/users"} component={Users} />
                         <Route path={"/settings"} component={Settings} />

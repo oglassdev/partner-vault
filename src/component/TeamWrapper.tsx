@@ -1,9 +1,8 @@
-import {createMemo, createResource, createSignal, For} from "solid-js";
+import {createMemo, createResource, For} from "solid-js";
 import {A, Outlet, useLocation, useNavigate, useParams} from "@solidjs/router";
 import {Bookmark, BookUser, GanttChart, LayoutDashboard, LogOut, Settings, Users} from "lucide-solid";
 import {getSupabaseClient} from "../index.tsx";
 import {getTeam} from "../lib/Teams.tsx";
-import Modal from "./Modal.tsx";
 
 export default function TeamWrapper() {
     let teamId = useParams().teamId;
@@ -15,12 +14,10 @@ export default function TeamWrapper() {
     let navs = [
         { name: "Dashboard", href: `/teams/${teamId}/`, icon: <LayoutDashboard size={18} class={"my-auto"} strokeWidth={2} /> },
         { name: "Partners", href: `/teams/${teamId}/partners`, icon: <BookUser size={18} class={"my-auto"} strokeWidth={2} /> },
-        { name: "Reports", href: `/teams/${teamId}/reports`, icon: <GanttChart size={18} class={"my-auto"} strokeWidth={2} /> },
         { name: "Tags", href: `/teams/${teamId}/tags`, icon: <Bookmark size={18} class={"my-auto"} strokeWidth={2} /> },
         { name: "Users", href: `/teams/${teamId}/users`, icon: <Users size={18} class={"my-auto"} strokeWidth={2} /> },
         { name: "Settings", href: `/teams/${teamId}/settings`, icon: <Settings size={18} class={"my-auto"} strokeWidth={2} /> }
     ]
-    let [isSettingsShown, setIsSettingsShown] = createSignal(false)
     return <div class={"w-full h-full flex flex-row"}>
         <nav class={"w-64 h-full flex-none bg-gray-100 flex flex-col dark:bg-gray-900 dark:text-gray-100"}>
             <div class={"flex flex-col flex-auto gap-1 pt-14 px-4 font-medium overflow-auto"}>
@@ -42,16 +39,8 @@ export default function TeamWrapper() {
                 <button class={"flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-600"} onClick={() => navigate("/teams")}>
                     <LogOut class={"mx-auto"} size={22}/>
                 </button>
-                <button class="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-600" onClick={() => setIsSettingsShown(true)}>
-                    <Settings class={"mx-auto"} size={22} />
-                </button>
             </div>
         </nav>
-        <Modal isOpen={isSettingsShown} onClose={() => setIsSettingsShown(false)}>
-            <div onClick={(event) => {
-                event.stopPropagation()
-            }} class={"bg-gray-200 dark:bg-gray-700 rounded-lg w-2/3 h-1/2 cursor-default m-auto"}></div>
-        </Modal>
         <Outlet />
     </div>
 }

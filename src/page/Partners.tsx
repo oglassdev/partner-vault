@@ -6,9 +6,7 @@ import {getPartners} from "../lib/Partners.tsx";
 import {getTeamTags} from "../lib/Tags.tsx";
 import {TransitionGroup} from "solid-transition-group";
 import {formatDate} from "../lib/DateUtil.tsx";
-import {Database} from "../../database.types.ts";
-import EditPartnerModal from "../component/EditPartnerModal.tsx";
-import createPartnerModal from "../component/CreatePartnerModal.tsx";
+import {createPartnerModal, editPartnerModal} from "../component/PartnerModals.tsx";
 
 export default function Partners() {
     let teamId = useParams().teamId;
@@ -23,14 +21,16 @@ export default function Partners() {
         return dbPartners()
             ?.filter(partner => {
                 return partner.name.toLowerCase().includes(search().toLowerCase()) &&
-                    (partner.type?.toLowerCase()?.includes(type().toLowerCase()) ?? true)
+                    (type() == null || type() == "" || partner.type?.toLowerCase()?.includes(type().toLowerCase())) &&
+                    (tagId() == null || tagId() == "" || partner.partner_tags.map((tag) => tag.tag_id).includes(tagId()))
             })
     })
-
-    const [editModalData, setEditModalData] = createSignal<{ partner: Database['public']['Tables']['partners']['Row'], tags: Database['public']['Tables']['tags']['Row'][] }>();
-    const [editModalShown, setEditModalShown] = createSignal<boolean>(false);
-
-    const {modal: createModal, open: openCreateModal} = createPartnerModal(teamId);
+    const refetch = () => {
+        refetchTags();
+        refetchPartners();
+    }
+    const {modal: createModal, open: openCreateModal} = createPartnerModal(teamId, refetch);
+    const {modal: editModal, open: openEditModal} = editPartnerModal(teamId, refetch);
 
     return <div class={"w-full h-full p-4 flex flex-col gap-2 dark:bg-gray-800 dark:text-white"}>
         <div class={"flex flex-row gap-2"}>
@@ -125,13 +125,14 @@ export default function Partners() {
                     <For each={partners()}>
                         {(partner) => {
                             return <button
-                                class={"w-60 max-h-fit text-left bg-gray-200 dark:bg-gray-700 rounded-lg p-2 flex flex-col hover:bg-gray-300 dark:hover:bg-gray-600 leading-5"}
+                                class={"w-60 min-h-fit text-left bg-gray-200 dark:bg-gray-700 rounded-lg p-2 flex flex-col hover:bg-gray-300 dark:hover:bg-gray-600 leading-5"}
                                 onClick={() => {
                                     const {partner_tags, ...partnerWithoutTags} = partner;
-                                    setEditModalData({partner: partnerWithoutTags, tags: partner.partner_tags
-                                            .filter((tag) => tag.tags != null)
-                                            .map(partnerTag => partnerTag.tags!)})
-                                    setEditModalShown(true)
+                                    openEditModal({
+                                        teamId: teamId,
+                                        partner: partnerWithoutTags,
+                                        tags: partner_tags.map((partner_tag) => partner_tag.tags!)
+                                    })
                                 }}
                             >
                                 <h4 class={"font-medium text-3xl"}>{partner.name}</h4>
@@ -152,11 +153,7 @@ export default function Partners() {
                 </TransitionGroup>
             </div>
         </Suspense>
-        <EditPartnerModal isOpen={editModalShown} onClose={() => {
-            setEditModalShown(false);
-            setEditModalData(undefined);
-            refetchPartners();
-        }} partner={editModalData()?.partner} tags={editModalData()?.tags} teamId={teamId} />
         {createModal()}
+        {editModal()}
     </div>
 }

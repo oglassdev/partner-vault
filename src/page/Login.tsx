@@ -2,21 +2,21 @@ import {createForm, email, minLength, required, SubmitHandler} from "@modular-fo
 import {getSupabaseClient} from "../index.tsx";
 import Apple from "../assets/apple.svg";
 import Google from "../assets/google.svg";
-import {Check} from "lucide-solid";
 import {toast} from "solid-toast";
 import {A, useNavigate} from "@solidjs/router";
 import {createEffect} from "solid-js";
 
-type LoginFormValues = {
-    email: string;
-    password: string;
-};
-
 export default function Login() {
-    const [, {Form, Field}] = createForm<LoginFormValues>();
+    const [, {Form, Field}] = createForm<{
+        email: string;
+        password: string;
+    }>();
     let navigate = useNavigate();
 
-    const handleSubmit: SubmitHandler<LoginFormValues> = async (values, _) => {
+    const handleSubmit: SubmitHandler<{
+        email: string;
+        password: string;
+    }> = async (values) => {
         let {data, error} = await getSupabaseClient().auth.signInWithPassword({
             email: values.email,
             password: values.password
@@ -34,8 +34,10 @@ export default function Login() {
     };
     createEffect(async () => {
         if ((await getSupabaseClient().auth.getSession())?.data?.session != null) {
-            navigate("/teams")
-            toast.success("Successfully logged in!")
+            // ""
+            console.log((await getSupabaseClient().auth.getSession())?.data?.session)
+            navigate("/teams");
+            toast.success("Successfully logged in!");
         }
     })
 
@@ -86,11 +88,7 @@ export default function Login() {
                         )}
                     </Field>
                     <div class="flex items-center justify-between">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="appearance-none relative peer w-6 h-6 border rounded-lg checked:bg-blue-500"/>
-                            <Check class={"absolute hidden peer-checked:block text-white p-0.5"} />
-                            <span class="ml-2 font-medium text-gray-600 dark:text-gray-400">Remember me</span>
-                        </label>
+                        <A href={"/forgot"} class={"text-gray-700 dark:text-gray-400 font-medium"}>Forgot Password</A>
                         <button
                             type="submit"
                             class="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"

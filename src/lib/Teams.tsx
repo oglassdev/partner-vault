@@ -14,6 +14,9 @@ export async function getTeam(teamId: string) {
             ),
             roles (
                 *
+            ),
+            tags (
+                *
             )
         `)
         .eq('id',teamId)
@@ -108,11 +111,19 @@ export async function createTeam(name: string) {
     let userId = sessionData.session?.user?.id;
     if (!userId) throw "You are not logged in!";
 
-    let { error } = await getSupabaseClient()
+    let { data, error } = await getSupabaseClient()
         .from('teams')
         .insert({ name: name, owner: userId })
+        .select()
+        .limit(1)
+        .maybeSingle();
 
     if (error) throw error;
+
+    let { error: utError } = await getSupabaseClient()
+        .from('user_teams')
+        .insert({ user_id: userId, team_id: data!.id })
+    if (utError) throw utError;
 }
 export async function deleteTeam(teamId: string) {
     let { error } = await getSupabaseClient()

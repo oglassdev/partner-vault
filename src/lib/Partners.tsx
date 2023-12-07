@@ -37,9 +37,7 @@ export async function createPartner(partner: Database['public']['Tables']['partn
     let { data, error } = await getSupabaseClient()
         .from('partners')
         .insert(partner)
-        .select()
-        .limit(1)
-        .maybeSingle();
+        .select();
     if (error) throw error;
     return data;
 }

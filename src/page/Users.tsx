@@ -7,6 +7,7 @@ import {writeText} from "@tauri-apps/plugin-clipboard-manager";
 import {toast} from "solid-toast";
 import {getSupabaseClient} from "../index.tsx";
 import {createTeamInvite} from "../lib/Teams.tsx";
+import {createModal} from "../component/Modal.tsx";
 
 export default function Users() {
     let teamId = useParams().teamId;
@@ -14,13 +15,12 @@ export default function Users() {
         let uid = (await getSupabaseClient().auth.getSession()).data.session?.user.id;
         if (uid == undefined) return false;
 
-        let data = getSupabaseClient().from('teams')
+        let {data} = await getSupabaseClient().from('teams')
             .select("owner")
             .eq("id", teamId)
             .eq("owner", uid)
             .limit(1)
             .maybeSingle();
-
         return data != null
     }
     const [dbUsers, {refetch: refetchUsers}] = createResource(async () => await getOtherUsers(teamId))
@@ -29,6 +29,40 @@ export default function Users() {
     const users = createMemo(() => {
         return dbUsers()?.filter((user) => search() == null || user.username?.toLowerCase().includes(search().toLowerCase()))
     })
+
+    const {modal, open} = createModal<{teamId: string}>((data, controller) => {
+        const [input, setInput] = createSignal("");
+        const invite = async () => {
+            let {data, error} = await getSupabaseClient().from("profiles")
+                .select()
+                .eq("username", input())
+                .limit(1)
+                .maybeSingle();
+            if (error || data == null) {
+                toast.error("Could not find the user with that username!");
+            }
+
+            createTeamInvite(data!.id,teamId)
+                .then(() => {
+                    toast.success("Successfully invited " + data!.username)
+                })
+                .catch((err) => {
+                    toast.error(err.message);
+                })
+        }
+        return (
+            <div onClick={(event) => {
+                event.stopPropagation()
+            }} class={"bg-gray-200 dark:bg-gray-700 rounded-lg w-fit cursor-default m-auto dark:text-white p-2 flex flex-col gap-2"}>
+                <input type={"text"} class={"appearance-none bg-white dark:bg-gray-600 rounded-lg p-2"} value={input()}
+                       onInput={(e) => {
+                           setInput(e.target.value)
+                       }
+                       } placeholder={"Username"} />
+                <button class={"bg-white dark:bg-gray-600 rounded-lg border-2 border-green-500 text-green-500 p-2"} onClick={invite}>Invite</button>
+            </div>
+        )
+    }, {teamId});
 
     return <div class={"w-full h-full p-4 flex flex-col gap-2 dark:bg-gray-800 dark:text-white"}>
         <div class={"flex flex-row gap-2"}>
@@ -39,6 +73,7 @@ export default function Users() {
                     setSearch(e.target.value);
                 }}
             />
+
             <button
                 class={"flex-none p-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg"}
                 onClick={() => {
@@ -51,13 +86,7 @@ export default function Users() {
                 <button
                     class={"flex-none p-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg"}
                     onClick={() => {
-                        createTeamInvite("",teamId)
-                            .then(() => {
-                                toast.success("Invited user!")
-                            })
-                            .catch((err) => {
-                                toast.error(err.message)
-                            })
+                        open({teamId});
                     }}
                 >
                     <Plus class={"m-auto"}/>
@@ -105,5 +134,6 @@ export default function Users() {
                 </TransitionGroup>
             </div>
         </Suspense>
+        {modal()}
     </div>
 }

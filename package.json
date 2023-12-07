@@ -23,12 +23,12 @@
     "@tauri-apps/plugin-deep-link": "2.0.0-alpha.2",
     "@tauri-apps/plugin-dialog": "2.0.0-alpha.3",
     "@tauri-apps/plugin-fs": "2.0.0-alpha.3",
+    "@tauri-apps/plugin-http": "2.0.0-alpha.3",
     "@tauri-apps/plugin-process": "2.0.0-alpha.3",
     "@tauri-apps/plugin-shell": "2.0.0-alpha.3",
     "lucide-solid": "^0.292.0",
     "solid-colorful": "^0.0.2",
     "solid-js": "^1.8.5",
-    "solid-modal": "^0.1.4",
     "solid-toast": "^0.5.0",
     "solid-transition-group": "^0.2.3"
   },

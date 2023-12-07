@@ -48,6 +48,11 @@
         { "host": "your.website.com", "pathPrefix": ["/open"] },
         { "host": "another.site.br" }
       ]
+    },
+    "http": {
+      "all": true,
+      "request": true,
+      "scope": ["https://**", "https://*"]
     }
   }
 }

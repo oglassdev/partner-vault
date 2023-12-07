@@ -5,10 +5,7 @@ import {TransitionGroup} from "solid-transition-group";
 import {numberToHex} from "../lib/Color.tsx";
 import {getTeamTags} from "../lib/Tags.tsx";
 import {formatDate} from "../lib/DateUtil.tsx";
-import CreateTagModal from "../component/CreateTagModal.tsx";
-import {Database} from "../../database.types.ts";
-import EditPartnerModal from "../component/EditPartnerModal.tsx";
-import EditTagModal from "../component/EditTagModal.tsx";
+import {createTagModal, editTagModal} from "../component/TagModals.tsx";
 
 export default function Tags() {
     let teamId = useParams().teamId;
@@ -18,10 +15,9 @@ export default function Tags() {
     const tags = createMemo(() => {
         return dbTags()?.filter((role) => search() == null || role.name.toLowerCase().includes(search().toLowerCase()))
     })
+    const {modal: createModal, open: openCreateModal} = createTagModal(teamId, refetchTags);
+    const {modal: editModal, open: openEditModal} = editTagModal(teamId, refetchTags);
 
-    const [createModalOpen, setCreateModalOpen] = createSignal(false);
-    const [editModalData, setEditModalData] = createSignal<Database["public"]["Tables"]["tags"]['Row']|undefined>();
-    const [editModalOpen, setEditModalOpen] = createSignal(false);
     return <div class={"w-full h-full p-4 flex flex-col gap-2 dark:bg-gray-800 dark:text-white"}>
         <div class={"flex flex-row gap-2"}>
             <input
@@ -42,7 +38,7 @@ export default function Tags() {
             <button
                 class={"flex-none p-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg"}
                 onClick={() => {
-                    setCreateModalOpen(true)
+                    openCreateModal({teamId});
                 }}
             >
                 <Plus class={"m-auto"}/>
@@ -76,8 +72,7 @@ export default function Tags() {
                                 class={"w-60 max-h-fit text-left bg-gray-100 dark:bg-gray-700 rounded-lg p-2 flex flex-col hover:bg-gray-200 dark:hover:bg-gray-600 leading-5 border-2"}
                                 style={{"border-color": numberToHex(tag.color ?? 0)}}
                                 onClick={() => {
-                                    setEditModalData(tag);
-                                    setEditModalOpen(true);
+                                    openEditModal({teamId: teamId, tag: tag})
                                 }}
                             >
                                 <h4 class={"font-medium text-3xl mb-auto"}>{tag.name}</h4>
@@ -88,13 +83,7 @@ export default function Tags() {
                 </TransitionGroup>
             </div>
         </Suspense>
-        <CreateTagModal teamId={teamId} isOpen={createModalOpen} onClose={() => {
-            setCreateModalOpen(false);
-            refetchTags()
-        }} />
-        <EditTagModal teamId={teamId} tag={editModalData()} isOpen={editModalOpen} onClose={() => {
-            setEditModalOpen(false);
-            refetchTags()
-        }} />
+        {editModal()}
+        {createModal()}
     </div>
 }

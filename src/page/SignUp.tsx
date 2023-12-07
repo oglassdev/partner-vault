@@ -23,13 +23,12 @@ export default function SignUp() {
     })
 
     const handleSubmit: SubmitHandler<LoginFormValues> = async (values, _) => {
-        toast.loading("Signing up...", {
-          "duration": 1000  
-        });
+        let loadingId = toast.loading("Signing up...");
         let {data, error} = await getSupabaseClient().auth.signUp({
             email: values.email,
             password: values.password
         })
+        toast.remove(loadingId);
         if (error != null) {
             toast.error(error.message);
             return
