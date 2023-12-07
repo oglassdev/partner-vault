@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@kobalte/core':
     specifier: ^0.11.2
@@ -52,9 +56,6 @@ dependencies:
   solid-js:
     specifier: ^1.8.5
     version: 1.8.5
-  solid-modal:
-    specifier: ^0.1.4
-    version: 0.1.4
   solid-toast:
     specifier: ^0.5.0
     version: 0.5.0(solid-js@1.8.5)
@@ -2378,10 +2379,6 @@ packages:
       csstype: 3.1.2
       seroval: 0.12.3
 
-  /solid-modal@0.1.4:
-    resolution: {integrity: sha512-W8EdnBoGNm6FYvNlFa3UY41+EqtQV9de8ryWQbloTNNC2ijazbORt48QRiggOt6z0niJedsU0cPyN5/YTcBvFQ==}
-    dev: false
-
   /solid-react-compat@0.0.2(solid-js@1.8.5):
     resolution: {integrity: sha512-kBV95nHNXBrPFNJ1QENIMpXY5CKoAQO/kB0Xwycmzwrm6EPlkGkg6IWA2QhRL+u7awBj3w2x/AJ3VJLIqE9HYg==}
     peerDependencies:
@@ -2778,7 +2775,3 @@ packages:
       react:
         optional: true
     dev: false
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

@@ -1,8 +1,9 @@
 import {createMemo, createResource, For} from "solid-js";
 import {A, Outlet, useLocation, useNavigate, useParams} from "@solidjs/router";
-import {Bookmark, BookUser, LayoutDashboard, LogOut, Settings, Users} from "lucide-solid";
+import {Bookmark, BookUser, HelpCircle, LayoutDashboard, LogOut, Settings, Users} from "lucide-solid";
 import {getSupabaseClient} from "../index.tsx";
 import {getTeam} from "../lib/Teams.tsx";
+import createHelpModal from "./HelpModal.tsx";
 
 export default function TeamWrapper() {
     let teamId = useParams().teamId;
@@ -18,6 +19,24 @@ export default function TeamWrapper() {
         { name: "Users", href: `/teams/${teamId}/users`, icon: <Users size={18} class={"my-auto"} strokeWidth={2} /> },
         { name: "Settings", href: `/teams/${teamId}/settings`, icon: <Settings size={18} class={"my-auto"} strokeWidth={2} /> }
     ]
+    let {modal: helpModal, open: openHelpModal} = createHelpModal(
+        <>
+            The dashboard shows a brief overview.<br /><br />
+            In the partners tab, one can<br />
+            <ul class={"flex flex-col list-disc pl-6"}>
+                <li class={"list-item"}>Create, read, update, and delete partners</li>
+                <li class={"list-item"}>Search and filter through partners</li>
+            </ul><br />
+            In the tags tab, one can<br />
+            <ul class={"flex flex-col list-disc pl-6"}>
+                <li class={"list-item"}>Create, read, update, and delete tags</li>
+                <li class={"list-item"}>Search and filter through tags</li>
+            </ul><br />
+            In the users tab, you can invite other people <br />and view their public data.<br />
+            If you are the owner, you can edit team info.
+
+        </>
+    )
     return <div class={"w-full h-full flex flex-row"}>
         <nav class={"w-64 h-full flex-none bg-gray-100 flex flex-col dark:bg-gray-900 dark:text-gray-100"}>
             <div class={"flex flex-col flex-auto gap-1 pt-14 px-4 font-medium overflow-auto"}>
@@ -35,6 +54,9 @@ export default function TeamWrapper() {
                     <h4 class="truncate font-medium">{session()?.data.session?.user.email}</h4>
                     <h4 class="truncate text-gray-600 dark:text-gray-400">{teamData()?.name || "Loading..."}</h4>
                 </div>
+                <button class={"flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-600"} onClick={openHelpModal}>
+                    <HelpCircle class={"mx-auto"} size={22} />
+                </button>
 
                 <button class={"flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-600"} onClick={() => navigate("/teams")}>
                     <LogOut class={"mx-auto"} size={22}/>
@@ -42,5 +64,6 @@ export default function TeamWrapper() {
             </div>
         </nav>
         <Outlet />
+        {helpModal()}
     </div>
 }

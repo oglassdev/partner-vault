@@ -21,6 +21,23 @@ body {
   background: #fff;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background: rgb(31 41 55);
