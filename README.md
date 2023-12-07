@@ -61,7 +61,7 @@ Partner Vault is specifically designed to work with a predefined Supabase instan
 
 ## Contributing
 
-We encourage contributions! If you'd like to contribute:
+If you'd like to contribute:
 
 1. Fork the repository.
 2. Create a feature branch (`git checkout -b feature-branch`).
@@ -73,7 +73,3 @@ We encourage contributions! If you'd like to contribute:
 ## License
 
 [GPL License](LICENSE.txt)
-
----
-
-This updated README reflects the educational focus of Partner Vault, the simplified installation process through releases, and includes a section on building the application from source. Adjust as needed for your specific use case and project details.

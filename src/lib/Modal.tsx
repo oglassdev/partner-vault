@@ -32,13 +32,13 @@ export function createModal<T>(children: (data: T, controller: ModalController<T
     const controller: ModalController<T> = {
         open: (data) => {
             setState(true);
-            setData(data);
+            setData(data as any);
             if (onOpen) onOpen(data);
         },
         close: () => {
             setState(false);
             if (onClose) onClose(data());
-            setData(initialData);
+            setData(initialData as any);
         }
     };
     return {

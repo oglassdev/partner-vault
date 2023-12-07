@@ -5,7 +5,7 @@ import {A, useNavigate} from "@solidjs/router";
 import {toast} from "solid-toast";
 import {acceptTeamInvite, createTeam, getTeamInvites, getTeams} from "../lib/Teams.tsx";
 import {Loader2, Plus, RefreshCcw} from "lucide-solid";
-import {createModal} from "../component/Modal.tsx";
+import {createModal} from "../lib/Modal.tsx";
 
 export default function Teams() {
     let [dbTeams, {refetch: refetchTeams}] = createResource(getTeams);

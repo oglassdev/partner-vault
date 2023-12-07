@@ -1,5 +1,5 @@
 import {Database} from "../../database.types.ts";
-import {createModal, Modal} from "./Modal.tsx";
+import {createModal, Modal} from "../lib/Modal.tsx";
 import {createStore} from "solid-js/store";
 import {HexColorPicker} from "solid-colorful";
 import {createTag, deleteTag, updateTag} from "../lib/Tags.tsx";

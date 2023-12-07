@@ -1,6 +1,6 @@
 import {createMemo, createResource, For} from "solid-js";
 import {A, Outlet, useLocation, useNavigate, useParams} from "@solidjs/router";
-import {Bookmark, BookUser, GanttChart, LayoutDashboard, LogOut, Settings, Users} from "lucide-solid";
+import {Bookmark, BookUser, LayoutDashboard, LogOut, Settings, Users} from "lucide-solid";
 import {getSupabaseClient} from "../index.tsx";
 import {getTeam} from "../lib/Teams.tsx";
 

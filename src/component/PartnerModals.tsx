@@ -1,4 +1,4 @@
-import {createModal, Modal} from "./Modal.tsx";
+import {createModal, Modal} from "../lib/Modal.tsx";
 import {CheckIcon, ChevronsUpDown, Plus, X} from "lucide-solid";
 import {createResource, createSignal, For} from "solid-js";
 import {createPartner, createPartnerTags, deletePartnerTags, removePartner, updatePartner} from "../lib/Partners.tsx";

@@ -7,7 +7,7 @@ import {writeText} from "@tauri-apps/plugin-clipboard-manager";
 import {toast} from "solid-toast";
 import {getSupabaseClient} from "../index.tsx";
 import {createTeamInvite} from "../lib/Teams.tsx";
-import {createModal} from "../component/Modal.tsx";
+import {createModal} from "../lib/Modal.tsx";
 
 export default function Users() {
     let teamId = useParams().teamId;
@@ -30,7 +30,7 @@ export default function Users() {
         return dbUsers()?.filter((user) => search() == null || user.username?.toLowerCase().includes(search().toLowerCase()))
     })
 
-    const {modal, open} = createModal<{teamId: string}>((data, controller) => {
+    const {modal, open} = createModal<{teamId: string}>((_, controller) => {
         const [input, setInput] = createSignal("");
         const invite = async () => {
             let {data, error} = await getSupabaseClient().from("profiles")
@@ -45,6 +45,7 @@ export default function Users() {
             createTeamInvite(data!.id,teamId)
                 .then(() => {
                     toast.success("Successfully invited " + data!.username)
+                    controller.close();
                 })
                 .catch((err) => {
                     toast.error(err.message);
