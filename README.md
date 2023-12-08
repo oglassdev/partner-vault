@@ -17,9 +17,10 @@ Partner Vault is a Tauri-based application developed for the FBLA coding and pro
 
 ### Using Releases
 
-1. Visit the [releases page](https://github.com/oglassdev/partner-vault-v2/releases) of the Partner Vault repository.
-2. Download the latest release for your operating system.
-3. Run the application!
+1. Visit the [releases page](https://github.com/oglassdev/partner-vault-v2/releases).
+2. Download the latest installer for your operating system.
+3. Run the installer.
+4. Open Partner Vault!
 
 ### Building from Source
 
