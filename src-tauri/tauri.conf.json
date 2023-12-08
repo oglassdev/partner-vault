@@ -43,12 +43,6 @@
     "shell": {
       "open": true
     },
-    "deep-link": {
-      "domains": [
-        { "host": "your.website.com", "pathPrefix": ["/open"] },
-        { "host": "another.site.br" }
-      ]
-    },
     "http": {
       "all": true,
       "request": true,

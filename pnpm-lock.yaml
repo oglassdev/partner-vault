@@ -29,9 +29,6 @@ dependencies:
   '@tauri-apps/plugin-clipboard-manager':
     specifier: 2.0.0-alpha.3
     version: 2.0.0-alpha.3
-  '@tauri-apps/plugin-deep-link':
-    specifier: 2.0.0-alpha.2
-    version: 2.0.0-alpha.2
   '@tauri-apps/plugin-dialog':
     specifier: 2.0.0-alpha.3
     version: 2.0.0-alpha.3
@@ -1090,12 +1087,6 @@ packages:
 
   /@tauri-apps/plugin-clipboard-manager@2.0.0-alpha.3:
     resolution: {integrity: sha512-Lo30EM8VRo9bYMeRHhZT65OUgajbxaK1A9UhD7/9VZIFoWGbzKU/jrP78mcJ77lc+RrcCcSJvkAgOaLtuOlhxw==}
-    dependencies:
-      '@tauri-apps/api': 2.0.0-alpha.11
-    dev: false
-
-  /@tauri-apps/plugin-deep-link@2.0.0-alpha.2:
-    resolution: {integrity: sha512-6uTy5t/gaqgugn3jOGp8WDjcWKeYgcdDUy6nyiRJwwyb1t4COQtH8hdPWng+zsFPV4zbCzWx2TIhS2SsRVDMBA==}
     dependencies:
       '@tauri-apps/api': 2.0.0-alpha.11
     dev: false

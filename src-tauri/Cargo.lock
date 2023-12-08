@@ -2396,12 +2396,12 @@ dependencies = [
 name = "partner-vault"
 version = "0.0.1"
 dependencies = [
+ "portpicker",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-clipboard-manager",
- "tauri-plugin-deep-link",
  "tauri-plugin-dialog",
  "tauri-plugin-http",
  "tauri-plugin-process",
@@ -2639,6 +2639,15 @@ dependencies = [
  "rustix 0.38.21",
  "tracing",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "portpicker"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be97d76faf1bfab666e1375477b23fde79eccf0276e9b63b92a39d676a889ba9"
+dependencies = [
+ "rand 0.8.5",
 ]
 
 [[package]]
@@ -3614,21 +3623,6 @@ dependencies = [
  "tauri",
  "tauri-build",
  "thiserror",
-]
-
-[[package]]
-name = "tauri-plugin-deep-link"
-version = "2.0.0-alpha.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f58e365c46dece1863548acbd51649787659baf008dafd342f537f359a2348ab"
-dependencies = [
- "log",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "thiserror",
- "url",
 ]
 
 [[package]]
