@@ -90,7 +90,7 @@ export default function Login() {
                     <div class="flex items-center justify-between">
                         <button
                             type="submit"
-                            class="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                            class="py-2 px-4 bg-blue-500 w-full text-white rounded-md hover:bg-blue-600"
                         >
                             Login
                         </button>
