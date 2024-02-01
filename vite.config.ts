@@ -12,6 +12,11 @@ const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
 export default defineConfig(async () => ({
   plugins: [solid(), solidSvg()],
 
+  resolve: {
+    alias: {
+      "~/": "/src/"
+    }
+  },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
