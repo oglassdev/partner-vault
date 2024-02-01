@@ -28,6 +28,7 @@
     "lucide-solid": "^0.292.0",
     "mantine-form-valibot-resolver": "^1.0.0",
     "solid-colorful": "^0.0.2",
+    "solid-icons": "^1.1.0",
     "solid-js": "^1.8.12",
     "solid-toast": "^0.5.0",
     "solid-transition-group": "^0.2.3",
