@@ -1,11 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ["class"],
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+	"./src/**/*.{html,js,jsx,md,mdx,ts,tsx}"
   ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+  presets: [require("./ui.preset.js")]
 }
-
