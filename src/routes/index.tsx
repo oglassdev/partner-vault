@@ -5,7 +5,6 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs.tsx
 import {Card, CardContent, CardHeader, CardTitle} from "~/components/ui/card.tsx";
 import AuthLoginForm from "~/components/auth-login-form.tsx";
 import AuthSignUpForm from "~/components/auth-signup-form.tsx";
-import {A, Outlet} from "@solidjs/router";
 
 export default function Index() {
     return (
@@ -24,7 +23,7 @@ export default function Index() {
                     </Help>
                     <ColorModeToggle/>
                 </header>
-                <Tabs class="my-auto">
+                <Tabs class="mt-auto mb-0 sm:mb-auto">
                     <TabsList class="grid w-full grid-cols-2">
                         <TabsTrigger value="login">Login</TabsTrigger>
                         <TabsTrigger value="signup">Signup</TabsTrigger>
@@ -77,14 +76,13 @@ export default function Index() {
                                 </CardHeader>
                                 <CardContent>
                                     <AuthSignUpForm/>
-                                    <A href="/createprofile">Hello</A>
                                 </CardContent>
                             </TabsContent>
                         </Transition>
-                        <Outlet />
                     </Card>
                 </Tabs>
-                <footer></footer>
+                <footer>
+                </footer>
             </div>
         </main>
     )

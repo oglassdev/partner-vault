@@ -32,7 +32,7 @@
         "title": "Partner Vault",
         "width": 800,
         "height": 600,
-        "minWidth": 800,
+        "minWidth": 400,
         "minHeight": 600,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"

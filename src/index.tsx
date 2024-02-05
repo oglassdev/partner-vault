@@ -3,22 +3,13 @@ import {render} from "solid-js/web";
 
 import "./styles.css";
 import {Route, Router, Routes} from "@solidjs/router";
-import {createClient, SupabaseClient} from "@supabase/supabase-js";
+import {createClient} from "@supabase/supabase-js";
 import {Database} from "../database.types.ts";
 import { Toaster } from "./components/ui/toast.tsx";
 import {ColorModeProvider, ColorModeScript, createLocalStorageManager} from "@kobalte/core";
 import Index from "~/routes";
-import {createContext, useContext} from "solid-js";
-import ProfileCreation from "~/components/dialog/profile-creation.tsx";
-
-const SupabaseContext = createContext<SupabaseClient>()
-export function useSupabaseContext() {
-    const value = useContext(SupabaseContext);
-    if (value == undefined) {
-        throw new Error("useSupabaseContext must be used within a SupabaseContext.Provider");
-    }
-    return value
-}
+import Teams from "~/routes/teams.tsx";
+import { SupabaseContext } from "./lib/context/supabase-context.ts";
 
 render(
     () => {
@@ -34,10 +25,8 @@ render(
                 }>
                     <Router>
                         <Routes>
-                            <Route path="/" component={Index}>
-                                <Route path="/" />
-                                <Route path="/createprofile" component={ProfileCreation} />
-                            </Route>
+                            <Route path="/" component={Index} />
+                            <Route path="/teams" component={Teams} />
                         </Routes>
                     </Router>
                 </SupabaseContext.Provider>

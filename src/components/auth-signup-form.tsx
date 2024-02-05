@@ -4,7 +4,7 @@ import {createForm, SubmitHandler, valiForm} from "@modular-forms/solid";
 import {AuthForm, AuthSchema} from "~/lib/validations/auth.ts";
 import {TbLoader} from "solid-icons/tb";
 import {showToast} from "~/components/ui/toast.tsx";
-import {useSupabaseContext} from "~/index.tsx";
+import {useSupabaseContext} from "~/lib/context/supabase-context.ts";
 
 export default function AuthSignUpForm() {
     const [authForm, { Form, Field }] = createForm<AuthForm>({
@@ -25,13 +25,19 @@ export default function AuthSignUpForm() {
     }
     return <Form onSubmit={handleSubmit} class="gap-3 flex flex-col my-auto">
         <Field name="email">
-            {(_, props) => (
-                <Input {...props} type="email" placeholder="me@email.com" />
+            {(field, props) => (
+                <>
+                    {field.error && <p class="text-sm text-red-500 -mb-2">{field.error}</p> }
+                    <Input {...props} type="email" placeholder="me@email.com" />
+                </>
             )}
         </Field>
         <Field name="password">
-            {(_, props) => (
-                <Input {...props} type="password" placeholder="Password"/>
+            {(field, props) => (
+                <>
+                    {field.error && <p class="text-sm text-red-500 -mb-2">{field.error}</p> }
+                    <Input {...props} type="password" placeholder="Password"/>
+                </>
             )}
         </Field>
         <Button type="submit" disabled={authForm.submitting}>

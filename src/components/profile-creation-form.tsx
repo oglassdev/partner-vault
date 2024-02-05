@@ -4,7 +4,7 @@ import {showToast} from "~/components/ui/toast.tsx";
 import {Input} from "~/components/ui/input.tsx";
 import {Button} from "~/components/ui/button.tsx";
 import {TbLoader} from "solid-icons/tb";
-import {useSupabaseContext} from "~/index.tsx";
+import {useSupabaseContext} from "~/lib/context/supabase-context.ts";
 
 export default function ProfileCreationForm(props: { onComplete: () => void }) {
     const [profileForm, { Form, Field }] = createForm<ProfileForm>({
@@ -48,8 +48,8 @@ export default function ProfileCreationForm(props: { onComplete: () => void }) {
         <Field name="username">
             {(field, props) => (
                 <>
-                <div>{field.error}</div>
-                <Input {...props} placeholder="Username"/>
+                    {field.error.length > 0 && <p class="text-sm text-red-500 -mb-2">{field.error}</p> }
+                    <Input {...props} placeholder="Username"/>
                 </>
             )}
         </Field>
