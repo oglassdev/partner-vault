@@ -2,7 +2,7 @@
 
 import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
-import solidSvg from 'vite-plugin-solid-svg'
+import solidSvg from "vite-plugin-solid-svg";
 import { internalIpV4 } from "internal-ip";
 
 // @ts-expect-error process is a nodejs global
@@ -14,8 +14,8 @@ export default defineConfig(async () => ({
 
   resolve: {
     alias: {
-      "~/": "/src/"
-    }
+      "~/": "/src/",
+    },
   },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
@@ -33,5 +33,5 @@ export default defineConfig(async () => ({
           port: 1421,
         }
       : undefined,
-  }
+  },
 }));
