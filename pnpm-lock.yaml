@@ -40,6 +40,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
+  corvu:
+    specifier: ^0.4.7
+    version: 0.4.7(solid-js@1.8.12)
   lucide-solid:
     specifier: ^0.292.0
     version: 0.292.0(solid-js@1.8.12)
@@ -334,6 +337,14 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
+  /@corvu/utils@0.1.0(solid-js@1.8.12):
+    resolution: {integrity: sha512-9pqt77fiDiqUkW7gH+tRYyNCagQPTco7ljBAkbF23wIuJYrEWyr8KpX8rlPiz4x0ll6pqTYpiif8betkhpkOLQ==}
+    peerDependencies:
+      solid-js: ^1.8
+    dependencies:
+      solid-js: 1.8.12
+    dev: false
+
   /@esbuild/android-arm64@0.18.20:
     resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}
     engines: {node: '>=12'}
@@ -545,6 +556,13 @@ packages:
       '@floating-ui/utils': 0.2.1
     dev: false
 
+  /@floating-ui/dom@1.6.3:
+    resolution: {integrity: sha512-RnDthu3mzPlQ31Ss/BTwQ1zjzIhr3lk1gZB1OC56h/1vEtaXkESrOqL5fQVMfXpwGtRwX+YsZBdyHtJMQnkArw==}
+    dependencies:
+      '@floating-ui/core': 1.6.0
+      '@floating-ui/utils': 0.2.1
+    dev: false
+
   /@floating-ui/utils@0.2.1:
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
     dev: false
@@ -746,6 +764,16 @@ packages:
       solid-js: 1.8.12
     dev: false
 
+  /@solid-primitives/memo@1.3.7(solid-js@1.8.12):
+    resolution: {integrity: sha512-LxGoHrybzOEMIqzyNn9Ploo2PENkrFeGIpq+lWnYq32ctbq0vTjAKblquVjz8N9Hvtk7WKQQzskXegyPkg+PVg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/scheduled': 1.4.2(solid-js@1.8.12)
+      '@solid-primitives/utils': 6.2.3(solid-js@1.8.12)
+      solid-js: 1.8.12
+    dev: false
+
   /@solid-primitives/props@3.1.9(solid-js@1.8.12):
     resolution: {integrity: sha512-2MvjgxF0rwMR8BGq2onN9KhxF66bQhtFWdrEkO/qjy8I4wr/OQrhwgM9RP89/gtzOVPXUYKSxt2lkCk+JQpNJA==}
     peerDependencies:
@@ -770,6 +798,14 @@ packages:
       solid-js: ^1.6.12
     dependencies:
       '@solid-primitives/utils': 6.2.2(solid-js@1.8.12)
+      solid-js: 1.8.12
+    dev: false
+
+  /@solid-primitives/scheduled@1.4.2(solid-js@1.8.12):
+    resolution: {integrity: sha512-duKaugDQtPk0v6MnkBuEalWk66/vA2G7zzoimQEvmUdh2+K2o8t908HIfI2NdBfwakQMQBV4epE3TFeN2Vsveg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
       solid-js: 1.8.12
     dev: false
 
@@ -801,6 +837,14 @@ packages:
 
   /@solid-primitives/utils@6.2.2(solid-js@1.8.12):
     resolution: {integrity: sha512-11ypVbp987XxETeRqY5Y3OmmTpm8/jZqJXRvo6AyqBthzkvvjEdReuUMU2yVb+pwWGxfZpWHZ6EUCcGXUMhfwg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.8.12
+    dev: false
+
+  /@solid-primitives/utils@6.2.3(solid-js@1.8.12):
+    resolution: {integrity: sha512-CqAwKb2T5Vi72+rhebSsqNZ9o67buYRdEJrIFzRXz3U59QqezuuxPsyzTSVCacwS5Pf109VRsgCJQoxKRoECZQ==}
     peerDependencies:
       solid-js: ^1.6.12
     dependencies:
@@ -1311,6 +1355,20 @@ packages:
   /convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
     dev: true
+
+  /corvu@0.4.7(solid-js@1.8.12):
+    resolution: {integrity: sha512-IfVfaPkxT5vZfHTaWx8EiIjAuSE72k9eIWYzBOT3q8TKAVGQJmlnRFYPwNi8XJbzBuksETnk+U0mX1gk1TcAFA==}
+    peerDependencies:
+      solid-js: ^1.8
+    dependencies:
+      '@corvu/utils': 0.1.0(solid-js@1.8.12)
+      '@floating-ui/dom': 1.6.3
+      '@solid-primitives/memo': 1.3.7(solid-js@1.8.12)
+      solid-focus-trap: 0.1.5(solid-js@1.8.12)
+      solid-js: 1.8.12
+      solid-presence: 0.1.5(solid-js@1.8.12)
+      solid-prevent-scroll: 0.1.5(solid-js@1.8.12)
+    dev: false
 
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -2235,6 +2293,15 @@ packages:
       - react
     dev: false
 
+  /solid-focus-trap@0.1.5(solid-js@1.8.12):
+    resolution: {integrity: sha512-8qTlDJDRhKE+qWt4T5MLaeuv7RMJ13tEEmHASjieO6q6/nCmw842T4lG8kAly4VC1bKCxUf0/oCczo9TD5096A==}
+    peerDependencies:
+      solid-js: ^1.8
+    dependencies:
+      '@corvu/utils': 0.1.0(solid-js@1.8.12)
+      solid-js: 1.8.12
+    dev: false
+
   /solid-icons@1.1.0(solid-js@1.8.12):
     resolution: {integrity: sha512-IesTfr/F1ElVwH2E1110s2RPXH4pujKfSs+koT8rwuTAdleO5s26lNSpqJV7D1+QHooJj18mcOiz2PIKs0ic+A==}
     peerDependencies:
@@ -2249,6 +2316,24 @@ packages:
       csstype: 3.1.3
       seroval: 1.0.4
       seroval-plugins: 1.0.4(seroval@1.0.4)
+
+  /solid-presence@0.1.5(solid-js@1.8.12):
+    resolution: {integrity: sha512-4BRCJ+ElC1wjUbYQV67WOYSozXgtmeSZ47NPrps0mREjJYKBCw+j0PXhktQUnpK2pPf95BTgB7BsXeIxM+Vz3Q==}
+    peerDependencies:
+      solid-js: ^1.8
+    dependencies:
+      '@corvu/utils': 0.1.0(solid-js@1.8.12)
+      solid-js: 1.8.12
+    dev: false
+
+  /solid-prevent-scroll@0.1.5(solid-js@1.8.12):
+    resolution: {integrity: sha512-8sIlHqaSclBGQJrsPabRlnlAKJib1+gfYWiQLG265tyxao+6yIaccIgbo58QHgPtRrRavANK7Io7DtAUBtP6QA==}
+    peerDependencies:
+      solid-js: ^1.8
+    dependencies:
+      '@corvu/utils': 0.1.0(solid-js@1.8.12)
+      solid-js: 1.8.12
+    dev: false
 
   /solid-react-compat@0.0.2(solid-js@1.8.12):
     resolution: {integrity: sha512-kBV95nHNXBrPFNJ1QENIMpXY5CKoAQO/kB0Xwycmzwrm6EPlkGkg6IWA2QhRL+u7awBj3w2x/AJ3VJLIqE9HYg==}

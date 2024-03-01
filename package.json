@@ -25,6 +25,7 @@
     "@tauri-apps/plugin-shell": "2.0.0-alpha.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "corvu": "^0.4.7",
     "lucide-solid": "^0.292.0",
     "mantine-form-valibot-resolver": "^1.0.0",
     "solid-colorful": "^0.0.2",

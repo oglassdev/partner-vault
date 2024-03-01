@@ -1,5 +1,5 @@
 import { Loader } from "lucide-solid";
-import { ParentProps, Suspense } from "solid-js";
+import { ParentProps, Suspense, children, untrack } from "solid-js";
 import { Transition } from "solid-transition-group";
 
 export function SuspenseSpinner(props: ParentProps) {
@@ -41,7 +41,7 @@ export function SuspenseSpinner(props: ParentProps) {
     >
       <Suspense
         fallback={
-          <div class="flex h-full w-full bg-gray-500 bg-opacity-10 transition-all">
+          <div class="flex h-full w-full flex-auto bg-gray-500 bg-opacity-10 transition-all">
             <Loader
               class="text-muted-foreground m-auto animate-spin"
               size={24}
@@ -49,7 +49,7 @@ export function SuspenseSpinner(props: ParentProps) {
           </div>
         }
       >
-        {props.children}
+        {untrack(children(() => props.children))}
       </Suspense>
     </Transition>
   );

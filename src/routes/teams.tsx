@@ -34,8 +34,8 @@ import LogoutButton from "~/components/logout-button.tsx";
 import { BsThreeDots } from "solid-icons/bs";
 import { A } from "@solidjs/router";
 import { cn } from "~/lib/utils";
+import { ViewType } from "~/lib/view";
 
-type View = "grid" | "table";
 export default function Teams() {
   const supabase = useSupabaseContext();
   const [teams, _] = createResource(async () => {
@@ -49,7 +49,7 @@ export default function Teams() {
     }
     return data;
   });
-  const [viewType, setViewType] = createSignal<View>("grid");
+  const [viewType, setViewType] = createSignal<ViewType>("grid");
   return (
     <main class="flex h-full w-full flex-col gap-2 p-4">
       <header class="mt-4 flex flex-row gap-2">

@@ -16,8 +16,10 @@ import Teams from "~/routes/teams.tsx";
 import { SupabaseProvider } from "./lib/context/supabase-context.ts";
 import Dashboard from "./routes/dashboard/index.tsx";
 import DashboardWrapper from "./routes/dashboard/wrapper.tsx";
-import TeamData from "./lib/team-data.tsx";
 import Users from "./routes/dashboard/users.tsx";
+import Partners from "./routes/dashboard/partners.tsx";
+import Tags from "./routes/dashboard/tags.tsx";
+import Settings from "./routes/dashboard/settings.tsx";
 
 render(
   () => {
@@ -36,15 +38,12 @@ render(
               <Routes>
                 <Route path="/" component={Index} />
                 <Route path="/teams" component={Teams} />
-                <Route
-                  path="/team/:team_id/"
-                  component={DashboardWrapper}
-                  data={TeamData}
-                >
+                <Route path="/team/:team_id/" component={DashboardWrapper}>
                   <Route path="/" component={Dashboard} />
                   <Route path="/users" component={Users} />
-                  <Route path="/partners" component={Dashboard} />
-                  <Route path="/settings" component={Dashboard} />
+                  <Route path="/tags" component={Tags} />
+                  <Route path="/partners" component={Partners} />
+                  <Route path="/settings" component={Settings} />
                 </Route>
               </Routes>
             </Router>
