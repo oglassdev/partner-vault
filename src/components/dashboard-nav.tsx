@@ -105,7 +105,7 @@ export default function DashboardNav(props: { groups: LinkGroup[] }) {
             aria-label="Team"
             class="hidden h-9 flex-none items-center overflow-hidden text-ellipsis text-left sm:flex"
           >
-            <SelectValue<TeamRow> class="max-w-36 truncate">
+            <SelectValue<TeamRow> class="max-w-52 truncate">
               {(state) => state.selectedOption()?.name}
             </SelectValue>
           </SelectTrigger>

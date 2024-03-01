@@ -5,7 +5,7 @@ import DashboardNav from "~/components/dashboard-nav";
 export default function DashboardWrapper() {
   const { team_id } = useParams();
   return (
-    <div class="flex h-screen w-full flex-col-reverse sm:flex-row">
+    <div class="flex h-screen w-full select-text flex-col-reverse sm:flex-row">
       <DashboardNav
         groups={[
           {

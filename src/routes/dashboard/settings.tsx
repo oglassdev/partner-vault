@@ -67,10 +67,13 @@ export default function Settings() {
       </DashboardTopBar>
       <SuspenseSpinner>
         <main class="flex flex-auto flex-col overflow-auto p-2">
-          <Label for="name" class="text-muted-foreground text-lg font-semibold">
+          <Label for="name" class="text-muted-foreground pb-2">
             Name
           </Label>
-          <Input placeholder="Team name" value={team()?.name} id="name" />
+          <div class="flex w-full flex-none flex-row gap-2">
+            <Input placeholder="Team name" value={team()?.name} id="name" />
+            <Button>Save</Button>
+          </div>
         </main>
       </SuspenseSpinner>
     </div>

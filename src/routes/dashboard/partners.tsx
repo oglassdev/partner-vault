@@ -36,7 +36,7 @@ import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { filter } from "~/lib/filter";
 import { sort } from "~/lib/sort";
-import { getDate, numberToHex } from "~/lib/utils";
+import { formatDate, getDate, numberToHex } from "~/lib/utils";
 import { ViewType } from "~/lib/view";
 
 export default function Partners() {
@@ -87,6 +87,10 @@ export default function Partners() {
     created_at: (a, b) =>
       getDate(a).getMilliseconds() - getDate(b).getMilliseconds(),
   });
+
+  const deletePartner = async (id: string) => {
+    handleError(await supabase.from("partners").delete().eq("id", id));
+  };
 
   return (
     <div class="flex h-full w-full flex-col">
@@ -185,7 +189,7 @@ export default function Partners() {
                 <For each={partners()}>
                   {(partner) => (
                     <Card class="flex flex-col">
-                      <CardHeader class="flex flex-row items-center justify-between space-y-0 p-4">
+                      <CardHeader class="flex flex-row items-center justify-between space-y-0">
                         <CardTitle class="overflow-clip text-ellipsis text-nowrap">
                           {partner.name}
                         </CardTitle>
@@ -230,8 +234,11 @@ export default function Partners() {
                           </For>
                         </div>
                       </CardContent>
-                      <CardFooter class="mt-auto font-semibold">
-                        {partner.type}
+                      <CardFooter class="mt-auto flex flex-col items-start font-semibold">
+                        <span class="text-muted-foreground font-medium">
+                          {formatDate(partner.created_at)}
+                        </span>
+                        <span>{partner.type}</span>
                       </CardFooter>
                     </Card>
                   )}

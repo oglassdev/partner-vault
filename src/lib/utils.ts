@@ -39,10 +39,10 @@ export function hexToNumber(hexColor: string): number {
 /**
  * Returns a consistent formatted date.
  * @param isoString Date as an ISO formatted date.
+ * @deprecated Use getDate().toLocaleDateString() instead
  */
 export function formatDate(isoString: string): string {
-  let date = getDate(isoString);
-  return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+  return getDate(isoString).toLocaleDateString();
 }
 /**
  * Returns a date object.
