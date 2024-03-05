@@ -69,7 +69,7 @@ export default function Users() {
     public_email: (a, b) => a?.localeCompare(b ?? "") ?? 0,
   });
   return (
-    <div class="flex h-full w-full flex-col">
+    <div class="h-full w-full overflow-auto">
       <DashboardTopBar>
         <Search value={search()} setValue={setSearch} />
         <Button
@@ -149,7 +149,7 @@ export default function Users() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex flex-auto overflow-auto">
+        <main class="flex min-h-full flex-auto overflow-auto">
           <Show
             when={users()?.length ?? 0 > 0}
             fallback={<span class="m-auto flex">No results found</span>}

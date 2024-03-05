@@ -3,7 +3,14 @@ import Help from "~/components/dialog/help.tsx";
 import { Input } from "~/components/ui/input.tsx";
 import { Button, buttonVariants } from "~/components/ui/button.tsx";
 import { Loader, Plus } from "lucide-solid";
-import { createResource, createSignal, For, Show, Suspense } from "solid-js";
+import {
+  createMemo,
+  createResource,
+  createSignal,
+  For,
+  Show,
+  Suspense,
+} from "solid-js";
 import {
   Card,
   CardFooter,
@@ -35,10 +42,11 @@ import { BsThreeDots } from "solid-icons/bs";
 import { A } from "@solidjs/router";
 import { cn } from "~/lib/utils";
 import { ViewType } from "~/lib/view";
+import { Grid } from "~/components/ui/grid";
 
 export default function Teams() {
   const supabase = useSupabaseContext();
-  const [teams, _] = createResource(async () => {
+  const [_teams] = createResource(async () => {
     const { data, error } = await supabase.from("teams").select();
     if (error) {
       showToast({
@@ -49,11 +57,21 @@ export default function Teams() {
     }
     return data;
   });
+  const [search, setSearch] = createSignal("");
   const [viewType, setViewType] = createSignal<ViewType>("grid");
+  const teams = createMemo(() =>
+    _teams()?.filter((team) => team.name.toLowerCase().includes(search())),
+  );
   return (
     <main class="flex h-full w-full flex-col gap-2 p-4">
       <header class="mt-4 flex flex-row gap-2">
-        <Input placeholder="Search Teams" />
+        <Input
+          placeholder="Search Teams"
+          value={search()}
+          onInput={(e) => {
+            setSearch(e.currentTarget.value);
+          }}
+        />
         <Button variant="outline" size="icon" class="flex-none">
           <Plus size={22} />
           <span class="sr-only">Create Team</span>
@@ -100,11 +118,14 @@ export default function Teams() {
                   <For each={teams()}>
                     {(team) => (
                       <TableRow>
-                        <TableCell class="font-medium">{team.name}</TableCell>
+                        <TableCell class="mr-4 truncate">{team.name}</TableCell>
                         <TableCell class="flex justify-end gap-2">
                           <A
                             href={`/team/${team.id}`}
-                            class={cn(buttonVariants({ variant: "outline" }))}
+                            class={cn(
+                              buttonVariants({ variant: "outline" }),
+                              "flex-none",
+                            )}
                           >
                             Select Team
                           </A>
@@ -140,12 +161,18 @@ export default function Teams() {
             </div>
           }
         >
-          <div class="flex w-full flex-row flex-wrap gap-2 overflow-auto overscroll-auto">
+          <Grid
+            class="w-full gap-2 overflow-auto overscroll-auto"
+            cols={1}
+            colsSm={2}
+            colsMd={3}
+            colsLg={4}
+          >
             <For each={teams()}>
               {(team) => {
                 const { name } = team;
                 return (
-                  <Card class="flex h-auto w-56 flex-col">
+                  <Card class="flex h-auto flex-col">
                     <CardHeader class="flex flex-row p-4">
                       <CardTitle>{name}</CardTitle>
                       <DropdownMenu>
@@ -184,7 +211,7 @@ export default function Teams() {
                 );
               }}
             </For>
-          </div>
+          </Grid>
         </Show>
       </Suspense>
       <footer class="mt-auto flex w-full flex-row items-center gap-1">

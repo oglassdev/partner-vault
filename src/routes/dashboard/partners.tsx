@@ -1,4 +1,5 @@
 import { As } from "@kobalte/core";
+import { Form } from "@modular-forms/solid";
 import { useParams } from "@solidjs/router";
 import { MoreVertical, RefreshCw } from "lucide-solid";
 import { CgOptions } from "solid-icons/cg";
@@ -6,6 +7,8 @@ import { For, Show } from "solid-js";
 import { createResource, createSignal } from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
 import Help from "~/components/dialog/help";
+import PartnerUpdateForm from "~/components/form/partner-update";
+import PartnerDropdown from "~/components/partner/partner-dropdown";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import { Badge } from "~/components/ui/badge";
@@ -22,7 +25,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuGroupLabel,
-  DropdownMenuItem,
   DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -36,7 +38,7 @@ import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { filter } from "~/lib/filter";
 import { sort } from "~/lib/sort";
-import { formatDate, getDate, numberToHex } from "~/lib/utils";
+import { getDate, numberToHex } from "~/lib/utils";
 import { ViewType } from "~/lib/view";
 
 export default function Partners() {
@@ -88,12 +90,8 @@ export default function Partners() {
       getDate(a).getMilliseconds() - getDate(b).getMilliseconds(),
   });
 
-  const deletePartner = async (id: string) => {
-    handleError(await supabase.from("partners").delete().eq("id", id));
-  };
-
   return (
-    <div class="flex h-full w-full flex-col">
+    <div class="h-full w-full overflow-auto">
       <DashboardTopBar>
         <Search value={search()} setValue={setSearch} />
         <Button
@@ -174,7 +172,7 @@ export default function Partners() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex flex-auto overflow-auto">
+        <main class="flex min-h-full flex-auto overflow-auto">
           <Show
             when={partners().length ?? 0 > 0}
             fallback={<span class="m-auto flex">No results found</span>}
@@ -189,54 +187,38 @@ export default function Partners() {
                 <For each={partners()}>
                   {(partner) => (
                     <Card class="flex flex-col">
-                      <CardHeader class="flex flex-row items-center justify-between space-y-0">
-                        <CardTitle class="overflow-clip text-ellipsis text-nowrap">
-                          {partner.name}
+                      <CardHeader class="flex flex-row items-start justify-between space-y-0">
+                        <CardTitle class="flex flex-auto flex-col gap-1">
+                          <span class="overflow-hidden">{partner.name}</span>
+                          <div class="flex flex-row flex-wrap gap-1">
+                            <For each={partner.tags}>
+                              {(tag) => (
+                                <Badge
+                                  variant="outline"
+                                  class="dark:border-opacity-50"
+                                  style={{
+                                    "border-color": numberToHex(
+                                      tag?.color ?? 0,
+                                    ),
+                                  }}
+                                >
+                                  {tag?.name}
+                                </Badge>
+                              )}
+                            </For>
+                          </div>
                         </CardTitle>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <As
-                              component={Button}
-                              variant="ghost"
-                              size="sm"
-                              class="h-9 w-9 flex-none"
-                            >
-                              <MoreVertical
-                                size={24}
-                                class="rotate-0 transition-all"
-                              />
-                              <span class="sr-only">Options</span>
-                            </As>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem>
-                              <span class="w-full text-center font-medium text-red-500">
-                                Leave Team
-                              </span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <PartnerDropdown
+                          partner={partner}
+                          tags={partner.tags.flatMap((tag) =>
+                            tag != null ? [tag] : [],
+                          )}
+                          refresh={refetchPartners}
+                        />
                       </CardHeader>
-                      <CardContent class="flex flex-col">
-                        <div class="flex flex-auto flex-row flex-wrap gap-1">
-                          <For each={partner.tags}>
-                            {(tag) => (
-                              <Badge
-                                variant="outline"
-                                class="dark:border-opacity-50"
-                                style={{
-                                  "border-color": numberToHex(tag?.color ?? 0),
-                                }}
-                              >
-                                {tag?.name}
-                              </Badge>
-                            )}
-                          </For>
-                        </div>
-                      </CardContent>
                       <CardFooter class="mt-auto flex flex-col items-start font-semibold">
                         <span class="text-muted-foreground font-medium">
-                          {formatDate(partner.created_at)}
+                          {getDate(partner.created_at).toLocaleString()}
                         </span>
                         <span>{partner.type}</span>
                       </CardFooter>

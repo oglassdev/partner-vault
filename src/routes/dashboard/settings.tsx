@@ -49,7 +49,7 @@ export default function Settings() {
     ),
   );
   return (
-    <div class="flex h-full w-full flex-col">
+    <div class="h-full w-full overflow-auto">
       <DashboardTopBar>
         <Button
           variant="ghost"
@@ -66,7 +66,7 @@ export default function Settings() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex flex-auto flex-col overflow-auto p-2">
+        <main class="flex min-h-full flex-auto flex-col overflow-auto p-2">
           <Label for="name" class="text-muted-foreground pb-2">
             Name
           </Label>

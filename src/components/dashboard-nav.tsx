@@ -79,7 +79,7 @@ export default function DashboardNav(props: { groups: LinkGroup[] }) {
   return (
     <nav
       class="
-      border-muted flex h-12 w-full flex-none flex-row
+      border-muted flex w-full flex-none flex-row
       gap-1 border-t bg-opacity-15 p-2 transition-all sm:h-full sm:w-64 sm:flex-col sm:border-r sm:pt-8
       "
     >
