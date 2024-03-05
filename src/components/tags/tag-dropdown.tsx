@@ -1,4 +1,4 @@
-import { PartnerRow, TagRow, handleError } from "~/lib/database/database";
+import { TagRow, handleError } from "~/lib/database/database";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,27 +24,23 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
-import PartnerViewMobile from "./partner-view-mobile";
-import PartnerView from "./partner-view";
-import PartnerUpdate from "./partner-update";
-import PartnerUpdateMobile from "./partner-update-mobile";
+import TagViewMobile from "./tag-view-mobile";
+import TagView from "./tag-view";
+import TagUpdate from "./tag-update";
+import TagUpdateMobile from "./tag-update-mobile";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 
-export type PartnerDropdownProps = {
-  partner: PartnerRow;
-  tags: TagRow[];
+export type TagDropdownProps = {
+  tag: TagRow;
   refresh: () => void;
 };
 
-export default function PartnerDropdown(props: PartnerDropdownProps) {
+export default function TagDropdown(props: TagDropdownProps) {
   const supabase = useSupabaseContext();
-  const deletePartner = async () => {
-    handleError(
-      await supabase.from("partners").delete().eq("id", props.partner.id),
-    );
+  const deleteTag = async () => {
+    handleError(await supabase.from("tags").delete().eq("id", props.tag.id));
     props.refresh();
   };
-
   return (
     <>
       <DropdownMenu>
@@ -60,8 +56,8 @@ export default function PartnerDropdown(props: PartnerDropdownProps) {
           </As>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <PartnerView {...props} />
-          <PartnerUpdate {...props} />
+          <TagView {...props} />
+          <TagUpdate {...props} />
           <Dialog>
             <DialogTrigger asChild>
               <As component={DropdownMenuItem} closeOnSelect={false}>
@@ -74,12 +70,12 @@ export default function PartnerDropdown(props: PartnerDropdownProps) {
                 <DialogDescription>
                   Deleting{" "}
                   <span class="text-primary font-semibold">
-                    {props.partner.name}
+                    {props.tag.name}
                   </span>
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button onClick={deletePartner} variant="destructive">
+                <Button onClick={deleteTag} variant="destructive">
                   Delete
                 </Button>
               </DialogFooter>
@@ -100,13 +96,11 @@ export default function PartnerDropdown(props: PartnerDropdownProps) {
           <span class="sr-only">Options</span>
         </DrawerTrigger>
         <DrawerContent class="gap-4 p-4 pt-0">
-          <DrawerTitle class="mx-auto">
-            {props.partner.name} Options
-          </DrawerTitle>
+          <DrawerTitle class="mx-auto">{props.tag.name} Options</DrawerTitle>
           <DrawerDescription class="flex max-w-[400px] flex-col gap-1">
-            <PartnerViewMobile {...props} />
-            <PartnerUpdateMobile {...props} />
-            <Button variant="destructive" onClick={deletePartner}>
+            <TagViewMobile {...props} />
+            <TagUpdateMobile {...props} />
+            <Button variant="destructive" onClick={deleteTag}>
               Delete
             </Button>
           </DrawerDescription>

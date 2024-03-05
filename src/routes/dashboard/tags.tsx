@@ -8,6 +8,7 @@ import DashboardTopBar from "~/components/dashboard-top-bar";
 import Help from "~/components/dialog/help";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
+import TagDropdown from "~/components/tags/tag-dropdown";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
@@ -24,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Grid } from "~/components/ui/grid";
+import { Label } from "~/components/ui/label";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { filter } from "~/lib/filter";
@@ -164,12 +166,10 @@ export default function Tags() {
                   >
                     <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle class="font-medium">{tag.name}</CardTitle>
+                      <TagDropdown tag={tag} refresh={refetchTags} />
                     </CardHeader>
                     <CardContent class="flex flex-col">
-                      <div class="flex flex-auto flex-row flex-wrap gap-1">
-                        {numberToHex(tag.color ?? 0)}
-                        {tag.description}
-                      </div>
+                      {tag.description}
                     </CardContent>
                   </Card>
                 )}
