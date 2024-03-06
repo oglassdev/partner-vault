@@ -43,62 +43,22 @@ export default function Index() {
             <TabsTrigger value="signup">Signup</TabsTrigger>
           </TabsList>
           <Card class="mt-2">
-            <Transition
-              onEnter={(el, done) => {
-                el.animate(
-                  [
-                    {
-                      transform: "translate(4%, 0%)",
-                      opacity: 0,
-                    },
-                    {
-                      transform: "translate(0%, 0%)",
-                      opacity: 100,
-                    },
-                  ],
-                  {
-                    duration: 150,
-                    easing: "ease-out",
-                  },
-                ).finished.then(done);
-              }}
-              onExit={(el, done) => {
-                el.animate(
-                  [
-                    {
-                      transform: "translate(0%, 0%)",
-                      opacity: 100,
-                    },
-                    {
-                      transform: "translate(-4%, 0%)",
-                      opacity: 0,
-                    },
-                  ],
-                  {
-                    duration: 150,
-                    easing: "ease-in",
-                  },
-                ).finished.then(done);
-              }}
-              mode="outin"
-            >
-              <TabsContent value="login">
-                <CardHeader class="-mt-2">
-                  <CardTitle>Log in</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <AuthLoginForm />
-                </CardContent>
-              </TabsContent>
-              <TabsContent value="signup">
-                <CardHeader class="-mt-2">
-                  <CardTitle>Create an account</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <AuthSignUpForm />
-                </CardContent>
-              </TabsContent>
-            </Transition>
+            <TabsContent value="login">
+              <CardHeader class="-mt-2">
+                <CardTitle>Log in</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AuthLoginForm />
+              </CardContent>
+            </TabsContent>
+            <TabsContent value="signup">
+              <CardHeader class="-mt-2">
+                <CardTitle>Create an account</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AuthSignUpForm />
+              </CardContent>
+            </TabsContent>
           </Card>
         </Tabs>
         <footer></footer>

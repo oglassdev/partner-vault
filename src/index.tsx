@@ -20,6 +20,8 @@ import Users from "./routes/dashboard/users.tsx";
 import Partners from "./routes/dashboard/partners.tsx";
 import Tags from "./routes/dashboard/tags.tsx";
 import Settings from "./routes/dashboard/settings.tsx";
+import CreateProfile from "~/routes/create-profile.tsx";
+import TransitionWrapper from "./components/transition-wrapper.tsx";
 
 render(
   () => {
@@ -36,8 +38,11 @@ render(
           >
             <Router>
               <Routes>
-                <Route path="/" component={Index} />
-                <Route path="/teams" component={Teams} />
+                <Route path="/" component={TransitionWrapper}>
+                  <Route path="/" component={Index} />
+                  <Route path="/createProfile" component={CreateProfile} />
+                  <Route path="/teams" component={Teams} />
+                </Route>
                 <Route path="/team/:team_id/" component={DashboardWrapper}>
                   <Route path="/" component={Dashboard} />
                   <Route path="/users" component={Users} />

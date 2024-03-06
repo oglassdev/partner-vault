@@ -2,7 +2,14 @@ import ColorModeToggle from "~/components/color-mode-toggle.tsx";
 import Help from "~/components/help.tsx";
 import { Button, buttonVariants } from "~/components/ui/button.tsx";
 import { MoreVertical } from "lucide-solid";
-import { createMemo, createResource, createSignal, For, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+  For,
+  Show,
+} from "solid-js";
 import {
   Card,
   CardFooter,
@@ -30,7 +37,7 @@ import { useSupabaseContext } from "~/lib/context/supabase-context.ts";
 import { showToast } from "~/components/ui/toast.tsx";
 import LogoutButton from "~/components/logout-button.tsx";
 import { BsThreeDots } from "solid-icons/bs";
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { cn } from "~/lib/utils";
 import { ViewType } from "~/lib/view";
 import { Grid } from "~/components/ui/grid";
@@ -44,7 +51,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { getUser } from "~/lib/database/supabase-user";
+import { getProfile, getUser } from "~/lib/database/supabase-user";
 import { handleError } from "~/lib/database/database";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import TeamCreation from "~/components/teams/team-creation";
@@ -83,6 +90,17 @@ export default function Teams() {
       title: "Left team " + name,
     });
   };
+
+  const navigate = useNavigate();
+  const [profile] = createResource(getProfile);
+  createEffect(() => {
+    const p = profile();
+    if (p == null) {
+      if (profile.loading) return;
+      navigate("/createProfile");
+    }
+  });
+
   return (
     <>
       <main class="flex h-full w-full flex-col">

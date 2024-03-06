@@ -6,6 +6,7 @@ import { For, Show } from "solid-js";
 import { createResource, createSignal } from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
 import Help from "~/components/help";
+import PartnerCreate from "~/components/partner/partner-create";
 import PartnerDropdown from "~/components/partner/partner-dropdown";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
@@ -101,6 +102,7 @@ export default function Partners() {
           <RefreshCw size={18} class="rotate-0 transition-all" />
           <span class="sr-only">Options</span>
         </Button>
+        <PartnerCreate team_id={team_id} refresh={refetchPartners} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <As

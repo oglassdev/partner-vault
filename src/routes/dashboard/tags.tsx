@@ -8,6 +8,7 @@ import DashboardTopBar from "~/components/dashboard-top-bar";
 import Help from "~/components/help";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
+import TagCreate from "~/components/tags/tag-create";
 import TagDropdown from "~/components/tags/tag-dropdown";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -75,6 +76,7 @@ export default function Tags() {
           <RefreshCw size={18} class="rotate-0 transition-all" />
           <span class="sr-only">Options</span>
         </Button>
+        <TagCreate team_id={team_id} refresh={refetchTags} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <As

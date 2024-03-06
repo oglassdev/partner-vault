@@ -35,6 +35,7 @@ export default function ProfileCreationForm(props: { onComplete: () => void }) {
       public_email:
         values.public_email.length == 0 ? null : values.public_email,
       username: values.username,
+      display_name: values.display_name,
     });
     if (error) {
       showToast({
@@ -47,7 +48,17 @@ export default function ProfileCreationForm(props: { onComplete: () => void }) {
   };
 
   return (
-    <Form onSubmit={handleSubmit} class="my-auto flex flex-col gap-3">
+    <Form onSubmit={handleSubmit} class="my-auto flex flex-col gap-1">
+      <Field name="display_name">
+        {(field, props) => (
+          <>
+            {field.error.length > 0 && (
+              <p class="-mb-2 text-sm text-red-500">{field.error}</p>
+            )}
+            <Input {...props} placeholder="Display name" />
+          </>
+        )}
+      </Field>
       <Field name="username">
         {(field, props) => (
           <>
@@ -71,7 +82,7 @@ export default function ProfileCreationForm(props: { onComplete: () => void }) {
         {profileForm.submitting && (
           <TbLoader class="mr-2 h-4 w-4 animate-spin" />
         )}
-        Update Profile
+        Create Profile
       </Button>
     </Form>
   );

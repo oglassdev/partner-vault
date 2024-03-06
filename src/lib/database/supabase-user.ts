@@ -12,14 +12,15 @@ export async function getUser(): Promise<User | null> {
 }
 
 export async function getProfile(): Promise<ProfileRow | null> {
+  const supabase = useSupabaseContext();
   const user = await getUser();
   if (user == null) return null;
   return handleError(
-    await useSupabaseContext()
+    await supabase
       .from("profiles")
       .select("*")
-      .limit(1)
       .eq("id", user.id)
-      .single(),
+      .limit(1)
+      .maybeSingle(),
   );
 }
