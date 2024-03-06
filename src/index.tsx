@@ -1,49 +1,62 @@
 /* @refresh reload */
-import {render} from "solid-js/web";
+import { render } from "solid-js/web";
 
 import "./styles.css";
-import {Route, Router, Routes} from "@solidjs/router";
-import TeamWrapper from "./component/TeamWrapper.tsx";
-import Dashboard from "./page/Dashboard.tsx";
+import { Route, Router, Routes } from "@solidjs/router";
 import { createClient } from "@supabase/supabase-js";
-import {Database} from "../database.types.ts";
-import Login from "./page/Login.tsx";
-import {Toaster} from "solid-toast";
-import LoginWrapper from "./component/LoginWrapper.tsx";
-import SignUp from "./page/SignUp.tsx";
-import Teams from "./page/Teams.tsx";
-import Partners from "./page/Partners.tsx";
-import Tags from "./page/Tags.tsx";
-import Users from "./page/Users.tsx";
-import Settings from "./page/Settings.tsx";
-
-const supabase = createClient<Database>('https://jmdvrevzgaryrzhlzpgd.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZHZyZXZ6Z2FyeXJ6aGx6cGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTk2NDc0MjAsImV4cCI6MjAxNTIyMzQyMH0.tF2ZIvyGYwdrbdBhVvec3xk-QaVBY4GDVyDxN76X-k4')
-
-export function getSupabaseClient() {
-    return supabase;
-}
+import { Database } from "../database.types.ts";
+import { Toaster } from "./components/ui/toast.tsx";
+import {
+  ColorModeProvider,
+  ColorModeScript,
+  createLocalStorageManager,
+} from "@kobalte/core";
+import Index from "~/routes";
+import Teams from "~/routes/teams.tsx";
+import { SupabaseProvider } from "./lib/context/supabase-context.ts";
+import Dashboard from "./routes/dashboard/index.tsx";
+import DashboardWrapper from "./routes/dashboard/wrapper.tsx";
+import Users from "./routes/dashboard/users.tsx";
+import Partners from "./routes/dashboard/partners.tsx";
+import Tags from "./routes/dashboard/tags.tsx";
+import Settings from "./routes/dashboard/settings.tsx";
+import CreateProfile from "~/routes/create-profile.tsx";
+import TransitionWrapper from "./components/transition-wrapper.tsx";
 
 render(
-    () => (
-        <>
+  () => {
+    const storageManager = createLocalStorageManager("color-mode");
+    return (
+      <>
+        <ColorModeScript storageType={storageManager.type} />
+        <ColorModeProvider storageManager={storageManager}>
+          <SupabaseProvider
+            value={createClient<Database>(
+              "https://jmdvrevzgaryrzhlzpgd.supabase.co",
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZHZyZXZ6Z2FyeXJ6aGx6cGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTk2NDc0MjAsImV4cCI6MjAxNTIyMzQyMH0.tF2ZIvyGYwdrbdBhVvec3xk-QaVBY4GDVyDxN76X-k4",
+            )}
+          >
             <Router>
-                <Routes>
-                    <Route path={"/"} component={LoginWrapper}>
-                        <Route path={"/"} component={Login} />
-                        <Route path={"/signup"} component={SignUp} />
-                    </Route>
-                    <Route path={"/teams"} component={Teams} />
-                    <Route path={"/teams/:teamId"} component={TeamWrapper}>
-                        <Route path={"/"} component={Dashboard} />
-                        <Route path={"/partners"} component={Partners} />
-                        <Route path={"/tags"} component={Tags} />
-                        <Route path={"/users"} component={Users} />
-                        <Route path={"/settings"} component={Settings} />
-                    </Route>
-                </Routes>
+              <Routes>
+                <Route path="/" component={TransitionWrapper}>
+                  <Route path="/" component={Index} />
+                  <Route path="/createProfile" component={CreateProfile} />
+                  <Route path="/teams" component={Teams} />
+                </Route>
+                <Route path="/team/:team_id/" component={DashboardWrapper}>
+                  <Route path="/" component={Dashboard} />
+                  <Route path="/users" component={Users} />
+                  <Route path="/tags" component={Tags} />
+                  <Route path="/partners" component={Partners} />
+                  <Route path="/settings" component={Settings} />
+                </Route>
+              </Routes>
             </Router>
-            <Toaster />
-        </>
-    ),
-    document.getElementById("root") as HTMLElement
+          </SupabaseProvider>
+          <Toaster />
+        </ColorModeProvider>
+      </>
+    );
+  },
+  document.getElementById("root") as HTMLElement,
 );

@@ -2,7 +2,7 @@
 
 import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
-import solidSvg from 'vite-plugin-solid-svg'
+import solidSvg from "vite-plugin-solid-svg";
 import { internalIpV4 } from "internal-ip";
 
 // @ts-expect-error process is a nodejs global
@@ -12,6 +12,11 @@ const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
 export default defineConfig(async () => ({
   plugins: [solid(), solidSvg()],
 
+  resolve: {
+    alias: {
+      "~/": "/src/",
+    },
+  },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
@@ -28,5 +33,5 @@ export default defineConfig(async () => ({
           port: 1421,
         }
       : undefined,
-  }
+  },
 }));
