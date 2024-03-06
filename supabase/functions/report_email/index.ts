@@ -1,36 +1,35 @@
-import {SMTPClient} from "https://deno.land/x/denomailer/mod.ts";
-import {createClient} from 'https://esm.sh/@supabase/supabase-js@2'
+import { SMTPClient } from "https://deno.land/x/denomailer/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 Deno.serve(async (req) => {
-    if (req.method === 'OPTIONS') {
-        return new Response('ok', {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-        })
-    }
+  if (req.method === "OPTIONS") {
+    return new Response("ok", {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers":
+        "authorization, x-client-info, apikey, content-type",
+    });
+  }
 
-    const authHeader = req.headers.get('Authorization')!
-    let teamId;
-    try {
-        const requestBody = await req.json();
-        teamId = requestBody.teamId;
-    } catch (e) {
-        return new Response(
-            JSON.stringify({ message: "Invalid JSON input" }),
-            {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' },
-            }
-        );
-    }
-    const supabaseClient = createClient(
-        Deno.env.get('SUPABASE_URL') ?? '',
-        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-        {global: {headers: {Authorization: authHeader}}}
-    )
-    let { data: teamData, error: teamError } = await supabaseClient
-        .from('teams')
-        .select(`
+  const authHeader = req.headers.get("Authorization")!;
+  let teamId;
+  try {
+    const requestBody = await req.json();
+    teamId = requestBody.teamId;
+  } catch (e) {
+    return new Response(JSON.stringify({ message: "Invalid JSON input" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
+  let { data: teamData, error: teamError } = await supabaseClient
+    .from("teams")
+    .select(
+      `
             *,
             partners (
                 *
@@ -43,40 +42,40 @@ Deno.serve(async (req) => {
             tags (
                 *
             )
-        `)
-        .eq('id',teamId)
-        .limit(1)
-        .single();
-    if (teamError) return new Response(
-        JSON.stringify(error),
-        {
-            status: 500,
-            headers: {'Content-Type': 'application/json'},
-        }
+        `,
     )
-    const { data } = await supabaseClient.auth.getUser()
-    const email = data.user.email;
-    if (email == null) return new Response(
-        JSON.stringify({
-            message: "You are not authorized"
-        }),
-        {
-            status: 403,
-            headers: {'Content-Type': 'application/json'},
-        }
-    );
-    const emailClient = new SMTPClient({
-        connection: {
-            hostname: Deno.env.get('SMTP_HOSTNAME'),
-            port: parseInt(Deno.env.get('SMTP_PORT')),
-            tls: true,
-            auth: {
-                username: Deno.env.get('SMTP_USERNAME'),
-                password: Deno.env.get('SMTP_PASSWORD')
-            },
-        }
+    .eq("id", teamId)
+    .limit(1)
+    .single();
+  if (teamError)
+    return new Response(JSON.stringify(error), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
     });
-    const html = `
+  const { data } = await supabaseClient.auth.getUser();
+  const email = data.user.email;
+  if (email == null)
+    return new Response(
+      JSON.stringify({
+        message: "You are not authorized",
+      }),
+      {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  const emailClient = new SMTPClient({
+    connection: {
+      hostname: Deno.env.get("SMTP_HOSTNAME"),
+      port: parseInt(Deno.env.get("SMTP_PORT")),
+      tls: true,
+      auth: {
+        username: Deno.env.get("SMTP_USERNAME"),
+        password: Deno.env.get("SMTP_PASSWORD"),
+      },
+    },
+  });
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -109,11 +108,17 @@ Deno.serve(async (req) => {
                     </tr>
                 </thead>
                 <tbody>
-                    ${teamData?.partners?.map(partner => `<tr>
+                    ${
+                      teamData?.partners
+                        ?.map(
+                          (partner) => `<tr>
                         <td>${partner.name}</td>
                         <td>${partner.type ?? "None"}</td>
                         <td>${partner.contacts?.join(", ") ?? ""}</td>
-                    </tr>`)?.join("") ?? ""}
+                    </tr>`,
+                        )
+                        ?.join("") ?? ""
+                    }
                 </tbody>
             </table>
         </div>
@@ -128,10 +133,16 @@ Deno.serve(async (req) => {
                     </tr>
                 </thead>
                 <tbody>
-                    ${teamData?.tags?.map(tag => `<tr>
+                    ${
+                      teamData?.tags
+                        ?.map(
+                          (tag) => `<tr>
                         <td>${tag.name}</td>
                         <td><span class="tag-color" style="background-color: #${tag.color?.toString(16) ?? "000"};"></span></td>
-                    </tr>`)?.join("") ?? ""}
+                    </tr>`,
+                        )
+                        ?.join("") ?? ""
+                    }
                 </tbody>
             </table>
         </div>
@@ -145,10 +156,16 @@ Deno.serve(async (req) => {
                     </tr>
                 </thead>
                 <tbody>
-                    ${teamData?.user_teams?.map(user => `<tr>
+                    ${
+                      teamData?.user_teams
+                        ?.map(
+                          (user) => `<tr>
                         <td>${user.profiles.username}</td>
                         <td>${user.profiles.public_email ?? "Email is not public"}</td>
-                    </tr>`)?.join("") ?? ""}
+                    </tr>`,
+                        )
+                        ?.join("") ?? ""
+                    }
                 </tbody>
             </table>
         </div>
@@ -158,30 +175,33 @@ Deno.serve(async (req) => {
 
 </body>
 </html>
-`
-    try {
-        let resp = await emailClient.send({
-            from: `Partner Vault<${Deno.env.get('SMTP_USERNAME')}>`,
-            to: email,
-            subject: `Partner Vault Report - ${teamData.name}`,
-            content: "Partner Vault Team Report",
-            html: html,
-        });
-    } catch (error) {
-        return new Response(JSON.stringify({message: error.message}), {status: 500, headers: {'Content-Type': 'application/json'}});
-    }
+`;
+  try {
+    let resp = await emailClient.send({
+      from: `Partner Vault<${Deno.env.get("SMTP_USERNAME")}>`,
+      to: email,
+      subject: `Partner Vault Report - ${teamData.name}`,
+      content: "Partner Vault Team Report",
+      html: html,
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ message: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
-    await emailClient.close();
+  await emailClient.close();
 
-    return new Response(
-        JSON.stringify({
-            done: true,
-        }),
-        {
-            headers: {'Content-Type': 'application/json'},
-        }
-    )
-})
+  return new Response(
+    JSON.stringify({
+      done: true,
+    }),
+    {
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+});
 
 // To invoke:
 // curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/' \

@@ -1,4 +1,4 @@
-import Help from "~/components/dialog/help.tsx";
+import Help from "~/components/help.tsx";
 import ColorModeToggle from "~/components/color-mode-toggle.tsx";
 import { Transition } from "solid-transition-group";
 import {

@@ -1,16 +1,8 @@
 import ColorModeToggle from "~/components/color-mode-toggle.tsx";
-import Help from "~/components/dialog/help.tsx";
-import { Input } from "~/components/ui/input.tsx";
+import Help from "~/components/help.tsx";
 import { Button, buttonVariants } from "~/components/ui/button.tsx";
-import { Loader, MoreVertical, Plus } from "lucide-solid";
-import {
-  createMemo,
-  createResource,
-  createSignal,
-  For,
-  Show,
-  Suspense,
-} from "solid-js";
+import { MoreVertical } from "lucide-solid";
+import { createMemo, createResource, createSignal, For, Show } from "solid-js";
 import {
   Card,
   CardFooter,
@@ -27,8 +19,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu.tsx";
-import { CgOptions } from "solid-icons/cg";
-import Invites from "~/components/dialog/invites.tsx";
+import Invites from "~/components/teams/invites.tsx";
 import {
   Table,
   TableBody,
@@ -43,12 +34,24 @@ import { A } from "@solidjs/router";
 import { cn } from "~/lib/utils";
 import { ViewType } from "~/lib/view";
 import { Grid } from "~/components/ui/grid";
-import DashboardTopBar from "~/components/dashboard-top-bar";
 import Search from "~/components/search";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { getUser } from "~/lib/database/supabase-user";
+import { handleError } from "~/lib/database/database";
+import { SuspenseSpinner } from "~/components/suspense-spinner";
+import TeamCreation from "~/components/teams/team-creation";
 
 export default function Teams() {
   const supabase = useSupabaseContext();
-  const [_teams] = createResource(async () => {
+  const [_teams, { refetch }] = createResource(async () => {
     const { data, error } = await supabase.from("teams").select();
     if (error) {
       showToast({
@@ -64,6 +67,22 @@ export default function Teams() {
   const teams = createMemo(() =>
     _teams()?.filter((team) => team.name.toLowerCase().includes(search())),
   );
+  const [user] = createResource(getUser);
+  const leaveTeam = async (id: string, name: string) => {
+    const u = user();
+    if (u == null) return;
+    handleError(
+      await supabase
+        .from("user_teams")
+        .delete()
+        .eq("team_id", id)
+        .eq("user_id", u.id),
+    );
+    refetch();
+    showToast({
+      title: "Left team " + name,
+    });
+  };
   return (
     <>
       <main class="flex h-full w-full flex-col">
@@ -81,6 +100,7 @@ export default function Teams() {
             </Help>
             <Invites />
             <LogoutButton />
+            <TeamCreation refresh={refetch} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <As
@@ -111,125 +131,151 @@ export default function Teams() {
             </DropdownMenu>
           </div>
         </header>
-        <Suspense
-          fallback={
-            <div class="m-auto">
-              <Loader class="animate-spin" color="#999" />
-            </div>
-          }
-        >
+        <SuspenseSpinner>
           <Show
-            when={viewType() === "grid"}
-            fallback={
-              <div class="flex-auto overflow-auto overscroll-auto">
-                <Table class="p-2">
-                  <TableBody>
-                    <For each={teams()}>
-                      {(team) => (
-                        <TableRow>
-                          <TableCell class="mr-4 truncate">
-                            {team.name}
-                          </TableCell>
-                          <TableCell class="flex justify-end gap-2">
-                            <A
-                              href={`/team/${team.id}`}
-                              class={cn(
-                                buttonVariants({
-                                  variant: "secondary",
-                                  size: "sm",
-                                }),
-                                "flex-none",
-                              )}
-                            >
-                              Select Team
-                            </A>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <As
-                                  component={Button}
-                                  variant="ghost"
-                                  size="sm"
-                                  class="h-9 w-9 flex-none"
-                                >
-                                  <MoreVertical
-                                    size={20}
-                                    class="rotate-0 transition-all"
-                                  />
-                                  <span class="sr-only">Options</span>
-                                </As>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <DropdownMenuItem>
-                                  <span class="w-full text-center font-medium text-red-500">
-                                    Leave Team
-                                  </span>
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </For>
-                  </TableBody>
-                </Table>
-              </div>
-            }
+            when={true}
+            fallback={<div class="m-auto">No teams found.</div>}
           >
-            <Grid
-              class="w-full gap-2 overflow-auto overscroll-auto p-2"
-              cols={1}
-              colsSm={2}
-              colsMd={3}
-              colsLg={4}
+            <Show
+              when={viewType() === "grid"}
+              fallback={
+                <div class="flex-auto overflow-auto overscroll-auto">
+                  <Table class="p-2">
+                    <TableBody>
+                      <For each={teams()}>
+                        {(team) => (
+                          <TableRow>
+                            <TableCell class="mr-4 truncate">
+                              {team.name}
+                            </TableCell>
+                            <TableCell class="flex justify-end gap-2">
+                              <A
+                                href={`/team/${team.id}`}
+                                class={cn(
+                                  buttonVariants({
+                                    variant: "secondary",
+                                    size: "sm",
+                                  }),
+                                  "flex-none",
+                                )}
+                              >
+                                Select Team
+                              </A>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <As
+                                    component={Button}
+                                    variant="ghost"
+                                    size="sm"
+                                    class="h-9 w-9 flex-none"
+                                  >
+                                    <MoreVertical
+                                      size={20}
+                                      class="rotate-0 transition-all"
+                                    />
+                                    <span class="sr-only">Options</span>
+                                  </As>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                  <DropdownMenuItem>
+                                    <span class="w-full text-center font-medium text-red-500">
+                                      Leave Team
+                                    </span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </For>
+                    </TableBody>
+                  </Table>
+                </div>
+              }
             >
-              <For each={teams()}>
-                {(team) => {
-                  const { name } = team;
-                  return (
-                    <Card class="flex flex-col">
-                      <CardHeader class="flex flex-row items-start justify-between gap-2 space-y-0">
-                        <CardTitle class="flex flex-auto flex-col gap-1">
-                          {name}
-                        </CardTitle>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <As
-                              component={Button}
-                              variant="ghost"
-                              size="icon"
-                              class="ml-auto h-9 w-9 flex-none"
-                            >
-                              <BsThreeDots size={15} class="rotate-90" />
-                              <span class="sr-only">Options</span>
-                            </As>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem>
-                              <span class="w-full text-center font-medium text-red-500">
-                                Leave Team
-                              </span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </CardHeader>
-                      <CardFooter class="mt-auto flex flex-row gap-2">
-                        <A
-                          href={`/team/${team.id}`}
-                          class={cn(
-                            buttonVariants({ variant: "secondary" }),
-                            "flex-auto",
-                          )}
-                        >
-                          Select Team
-                        </A>
-                      </CardFooter>
-                    </Card>
-                  );
-                }}
-              </For>
-            </Grid>
+              <Grid
+                class="w-full gap-2 overflow-auto overscroll-auto p-2"
+                cols={1}
+                colsSm={2}
+                colsMd={3}
+                colsLg={4}
+              >
+                <For each={teams()}>
+                  {(team) => {
+                    const { name, id, owner } = team;
+                    return (
+                      <Card class="flex flex-col">
+                        <CardHeader class="flex flex-row items-start justify-between gap-2 space-y-0">
+                          <CardTitle class="flex flex-auto flex-col gap-1">
+                            {name}
+                          </CardTitle>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <As
+                                component={Button}
+                                variant="ghost"
+                                size="icon"
+                                class="ml-auto h-9 w-9 flex-none"
+                              >
+                                <BsThreeDots size={15} class="rotate-90" />
+                                <span class="sr-only">Options</span>
+                              </As>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <As
+                                    component={DropdownMenuItem}
+                                    closeOnSelect={false}
+                                    disabled={user()?.id == owner}
+                                  >
+                                    <span class="w-full font-medium text-red-500">
+                                      Leave
+                                    </span>
+                                  </As>
+                                </DialogTrigger>
+                                <DialogContent class="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Are you sure?</DialogTitle>
+                                    <DialogDescription>
+                                      Leaving{" "}
+                                      <span class="text-primary font-semibold">
+                                        {name}
+                                      </span>
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <Button
+                                      onClick={() => leaveTeam(id, name)}
+                                      variant="destructive"
+                                    >
+                                      Leave
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </CardHeader>
+                        <CardFooter class="mt-auto flex flex-row gap-2">
+                          <A
+                            href={`/team/${team.id}`}
+                            class={cn(
+                              buttonVariants({ variant: "secondary" }),
+                              "flex-auto",
+                            )}
+                          >
+                            Select Team
+                          </A>
+                        </CardFooter>
+                      </Card>
+                    );
+                  }}
+                </For>
+              </Grid>
+            </Show>
           </Show>
-        </Suspense>
+        </SuspenseSpinner>
       </main>
     </>
   );

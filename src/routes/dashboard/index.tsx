@@ -2,7 +2,7 @@ import { useParams } from "@solidjs/router";
 import { Contact, LineChart, Tag, User } from "lucide-solid";
 import { For, createResource } from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
-import Help from "~/components/dialog/help";
+import Help from "~/components/help";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Col, Grid } from "~/components/ui/grid";

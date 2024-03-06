@@ -5,7 +5,7 @@ import { CgOptions } from "solid-icons/cg";
 import { For, Show } from "solid-js";
 import { createResource, createSignal } from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
-import Help from "~/components/dialog/help";
+import Help from "~/components/help";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import { Button } from "~/components/ui/button";

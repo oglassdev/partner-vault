@@ -5,7 +5,7 @@ import { CgOptions } from "solid-icons/cg";
 import { For, Show } from "solid-js";
 import { createResource, createSignal } from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
-import Help from "~/components/dialog/help";
+import Help from "~/components/help";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import TagDropdown from "~/components/tags/tag-dropdown";
@@ -25,7 +25,6 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Grid } from "~/components/ui/grid";
-import { Label } from "~/components/ui/label";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { filter } from "~/lib/filter";

@@ -1,13 +1,11 @@
 import { As } from "@kobalte/core";
-import { Form } from "@modular-forms/solid";
 import { useParams } from "@solidjs/router";
-import { MoreVertical, RefreshCw } from "lucide-solid";
+import { RefreshCw } from "lucide-solid";
 import { CgOptions } from "solid-icons/cg";
 import { For, Show } from "solid-js";
 import { createResource, createSignal } from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
-import Help from "~/components/dialog/help";
-import PartnerUpdateForm from "~/components/form/partner-update";
+import Help from "~/components/help";
 import PartnerDropdown from "~/components/partner/partner-dropdown";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";

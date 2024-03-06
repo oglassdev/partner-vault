@@ -15,7 +15,7 @@ import {
   DrawerDescription,
   DrawerTitle,
   DrawerTrigger,
-} from "../ui/drawer";
+} from "./ui/drawer";
 
 export default function Help(props: ParentProps) {
   return (
