@@ -1,55 +1,56 @@
-name: 'publish'
+name: Build and Release Tauri App
 
-# This will trigger the action on each push to the `release` branch.
 on:
   push:
-    branches:
-      - release
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
-  publish-tauri:
-    permissions:
-      contents: write
+  build-and-release:
+    runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
-
-    runs-on: ${{ matrix.platform }}
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
-
-      - name: setup node
-        uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: '20'
+          cache: 'pnpm'
 
-      - name: Setup pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v3.0.0
         with:
           version: 8.4.0
-          dest: ~/setup-pnpm
-          run_install: false
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build Tauri app
+        run: pnpm run tauri build
+        # The build command should be adjusted according to your project's setup to output binaries for each OS
 
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
-
-      - name: install frontend dependencies
-        run: pnpm install # change this to npm or pnpm depending on which one you use
-
-      - uses: tauri-apps/tauri-action@v0
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: true
           prerelease: false
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./tauri-app-${{ github.ref_name }}-${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'macos' || 'linux' }}.zip
+          asset_name: tauri-app-${{ github.ref_name }}-${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'macos' || 'linux' }}.zip
+          asset_content_type: application/zip
