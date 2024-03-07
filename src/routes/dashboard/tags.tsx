@@ -15,8 +15,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuGroupLabel,
   DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -135,7 +133,7 @@ export default function Tags() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex min-h-full flex-auto overflow-auto">
+        <main class="flex flex-auto overflow-auto">
           <Show
             when={tags()?.length ?? 0 > 0}
             fallback={<span class="m-auto flex">No results found</span>}

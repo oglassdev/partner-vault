@@ -81,8 +81,8 @@ export default function Dashboard() {
           Partner Vault, use the navigation menu at the left.
         </Help>
       </DashboardTopBar>
-      <main class="flex h-full w-full flex-col">
-        <SuspenseSpinner>
+      <SuspenseSpinner>
+        <main class="flex flex-auto w-full flex-col">
           <Grid cols={1} colsMd={2} colsLg={3} class="gap-2 p-2">
             <Card>
               <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -156,8 +156,8 @@ export default function Dashboard() {
               </Card>
             </Col>
           </Grid>
-        </SuspenseSpinner>
-      </main>
+        </main>
+      </SuspenseSpinner>
     </div>
   );
 }

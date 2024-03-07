@@ -99,7 +99,7 @@ export default function Settings() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex min-h-full flex-auto flex-col overflow-auto p-2">
+        <main class="flex flex-auto flex-col overflow-auto p-2">
           <Label for="name" class="text-muted-foreground pb-2">
             Name
           </Label>

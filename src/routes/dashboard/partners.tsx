@@ -14,17 +14,13 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   Card,
-  CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuGroupLabel,
-  DropdownMenuPortal,
+  DropdownMenuContent, DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSub,
@@ -74,8 +70,8 @@ export default function Partners() {
       tags: (tags) => {
         return search().length > 0
           ? tags.find((tag) =>
-              tag?.name.toLowerCase().includes(search().toLowerCase()),
-            ) != null
+            tag?.name.toLowerCase().includes(search().toLowerCase()),
+          ) != null
           : true;
       },
       id: (id) => id.toLowerCase().includes(search().toLowerCase()),
@@ -159,7 +155,7 @@ export default function Partners() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex min-h-full flex-auto overflow-auto">
+        <main class="flex flex-auto overflow-auto">
           <Show
             when={partners().length ?? 0 > 0}
             fallback={<span class="m-auto flex">No results found</span>}
