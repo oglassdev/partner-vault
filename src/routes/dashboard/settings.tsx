@@ -19,6 +19,8 @@ import { showToast } from "~/components/ui/toast";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { getUser } from "~/lib/database/supabase-user";
+import { fetch } from "@tauri-apps/plugin-http";
+import { TbLoader } from "solid-icons/tb";
 
 export default function Settings() {
   const { team_id } = useParams();
@@ -48,6 +50,37 @@ export default function Settings() {
       title: "Deleted " + team()?.name,
     });
   };
+
+  const [reportLoading, setReportLoading] = createSignal(false);
+  const generateReport = async () => {
+    setReportLoading(true);
+    const response = await fetch(
+      "https://jmdvrevzgaryrzhlzpgd.supabase.co/functions/v1/report_email",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          teamId: team_id,
+        }),
+        connectTimeout: 5,
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    if (response.ok) {
+      showToast({
+        title: "Report sent to your email",
+      });
+    } else {
+      showToast({
+        title: "Error sending the report",
+        variant: "destructive",
+      });
+    }
+    setReportLoading(false);
+  };
+
   return (
     <div class="h-full w-full overflow-auto">
       <DashboardTopBar>
@@ -74,8 +107,20 @@ export default function Settings() {
             <Input placeholder="Team name" value={team()?.name} id="name" />
             <Button>Save</Button>
           </div>
+          <div class="mt-4 flex w-full flex-none flex-col">
+            <Label for="report" class="text-muted-foreground pb-2">
+              Reports
+            </Label>
+            <Button onClick={generateReport} disabled={reportLoading()}>
+              {reportLoading() && (
+                <TbLoader class="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Generate a report
+            </Button>
+          </div>
 
-          <Label class="text-destructive mt-8 pb-2">Danger Zone</Label>
+          <span class="bg-muted my-3 h-[1px] w-full" />
+          <Label class="text-destructive pb-2">Danger Zone</Label>
           <Dialog>
             <DialogTrigger
               as={Button}
