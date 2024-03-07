@@ -38,7 +38,6 @@ import { handleError } from "~/lib/database/database";
 import { filter } from "~/lib/filter";
 import { sort } from "~/lib/sort";
 import { getDate, numberToHex } from "~/lib/utils";
-import { ViewType } from "~/lib/view";
 
 export default function Partners() {
   const { team_id } = useParams();
@@ -67,7 +66,6 @@ export default function Partners() {
     },
   );
   const [search, setSearch] = createSignal("");
-  const [viewType, setViewType] = createSignal<ViewType>("grid");
   const [filteredPartners, filterType, setFilterType] = filter(
     _partners,
     "name",
@@ -116,17 +114,6 @@ export default function Partners() {
             </As>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuGroup>
-              <DropdownMenuGroupLabel>View</DropdownMenuGroupLabel>
-              <DropdownMenuRadioGroup value={viewType()} onChange={setViewType}>
-                <DropdownMenuRadioItem value="grid">
-                  Grid View
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="table">
-                  Table View
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuGroup>
             <DropdownMenuSub overlap>
               <DropdownMenuSubTrigger>Sort</DropdownMenuSubTrigger>
               <DropdownMenuPortal>

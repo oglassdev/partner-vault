@@ -24,11 +24,11 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Grid } from "~/components/ui/grid";
+import UserInvite from "~/components/user/user-invite";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { filter } from "~/lib/filter";
 import { sort } from "~/lib/sort";
-import { ViewType } from "~/lib/view";
 
 export default function Users() {
   const { team_id } = useParams();
@@ -53,7 +53,6 @@ export default function Users() {
     },
   );
   const [search, setSearch] = createSignal("");
-  const [viewType, setViewType] = createSignal<ViewType>("grid");
   const [filteredUsers, filterType, setFilterType] = filter(
     _users,
     "username",
@@ -81,6 +80,7 @@ export default function Users() {
           <RefreshCw size={18} class="rotate-0 transition-all" />
           <span class="sr-only">Options</span>
         </Button>
+        <UserInvite />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <As
@@ -94,17 +94,6 @@ export default function Users() {
             </As>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuGroup>
-              <DropdownMenuGroupLabel>View</DropdownMenuGroupLabel>
-              <DropdownMenuRadioGroup value={viewType()} onChange={setViewType}>
-                <DropdownMenuRadioItem value="grid">
-                  Grid View
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="table">
-                  Table View
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuGroup>
             <DropdownMenuSub overlap>
               <DropdownMenuSubTrigger>Sort</DropdownMenuSubTrigger>
               <DropdownMenuPortal>

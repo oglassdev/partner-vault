@@ -1,11 +1,11 @@
 import { User } from "@supabase/supabase-js";
 import { useSupabaseContext } from "../context/supabase-context";
-import { ProfileRow, handleError, toastError } from "./database";
+import { ProfileRow, handleError } from "./database";
 
 export async function getUser(): Promise<User | null> {
   const { data, error } = await useSupabaseContext().auth.getUser();
   if (error) {
-    toastError("Failed to retrieve user", error.message);
+    //toastError("Failed to retrieve user", error.message);
     return null;
   }
   return data?.user;

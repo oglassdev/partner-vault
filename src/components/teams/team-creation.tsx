@@ -9,14 +9,12 @@ import { handleError } from "~/lib/database/database";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
 import { Plus } from "lucide-solid";
 import { As } from "@kobalte/core";
-import { useDialogContext } from "corvu/drawer";
 import { showToast } from "../ui/toast";
 
 export type TeamCreationFormType = {
@@ -56,12 +54,6 @@ export function TeamCreationForm(
       });
       return;
     }
-    handleError(
-      await supabase.from("user_teams").insert({
-        user_id: u.id,
-        team_id: team.id,
-      }),
-    );
     props.refresh();
     props.onOpenChange(false);
     showToast({

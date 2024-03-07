@@ -15,8 +15,18 @@ import {
 } from "~/components/ui/card.tsx";
 import AuthLoginForm from "~/components/auth-login-form.tsx";
 import AuthSignUpForm from "~/components/auth-signup-form.tsx";
+import { useNavigate } from "@solidjs/router";
+import { createEffect, createResource } from "solid-js";
+import { getUser } from "~/lib/database/supabase-user";
 
 export default function Index() {
+  const navigate = useNavigate();
+  const [user] = createResource(getUser);
+  createEffect(() => {
+    const u = user();
+    if (user.loading || u == null) return;
+    navigate("/teams");
+  });
   return (
     <main class="flex h-screen w-full flex-row">
       <div class="dark:bg-muted hidden flex-auto flex-col bg-gray-200 p-8 sm:flex dark:border-r">

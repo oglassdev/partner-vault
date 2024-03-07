@@ -16,9 +16,9 @@ export type TagRow = Database["public"]["Tables"]["tags"]["Row"];
 export type TagUpdate = Database["public"]["Tables"]["tags"]["Update"];
 export type TagInsert = Database["public"]["Tables"]["tags"]["Insert"];
 
-export type ProfileRow = Database["public"]["Tables"]["tags"]["Row"];
-export type ProfileUpdate = Database["public"]["Tables"]["tags"]["Update"];
-export type ProfileInsert = Database["public"]["Tables"]["tags"]["Insert"];
+export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
+export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
 
 export function handleError<T>(
   postgrestResponse: PostgrestSingleResponse<T>,
@@ -31,6 +31,7 @@ export function handleError<T>(
 }
 
 export function toastError(title: string, description: string) {
+  if (title.length == 0 && description.length == 0) return;
   showToast({
     variant: "destructive",
     title,

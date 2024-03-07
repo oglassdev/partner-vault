@@ -15,27 +15,67 @@ import {
   TableCell,
   TableRow,
 } from "~/components/ui/table.tsx";
-import { createResource, For } from "solid-js";
-import { Database } from "../../../database.types.ts";
+import { createResource, createSignal, For } from "solid-js";
 import { useSupabaseContext } from "~/lib/context/supabase-context.ts";
-import { showToast } from "~/components/ui/toast.tsx";
+import { handleError } from "~/lib/database/database.ts";
+import { getUser } from "~/lib/database/supabase-user";
+import { showToast } from "../ui/toast";
 
-export default function Invites() {
+export default function Invites(props: { refresh: () => void }) {
   const supabase = useSupabaseContext();
-  const [invites] = createResource<
-    Database["public"]["Tables"]["invites"]["Row"][]
-  >(async () => {
-    const { data, error } = await supabase.from("invites").select();
-    if (error) {
-      showToast({
-        title: `Error: ${error.code}`,
-        description: error.message,
-      });
-    }
-    return data!;
-  });
+  const [user] = createResource(getUser);
+  const [invites, { refetch }] = createResource(
+    async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session == null) {
+        showToast({
+          title: "Failed to retrieve session.",
+          variant: "destructive",
+        });
+        return [];
+      }
+      return (
+        handleError(
+          await supabase
+            .from("invites")
+            .select(
+              `
+      *,
+      teams (*)
+      `,
+            )
+            .eq("to_id", session.user.id),
+        ) ?? []
+      );
+    },
+    {
+      initialValue: [],
+    },
+  );
+  const acceptInvites = async (invites: string[]) => {
+    handleError(await supabase.rpc("accept_team_invites", { teams: invites }));
+    props.refresh();
+    refetch();
+  };
+  const declineInvites = async (invites: string[]) => {
+    const userId = user()?.id;
+    if (userId == null) return;
+    handleError(
+      await supabase
+        .from("invites")
+        .delete()
+        .contains("team_id", invites)
+        .eq("to_id", userId),
+    );
+    props.refresh();
+    refetch();
+  };
+
+  const [open, setOpen] = createSignal(false);
   return (
-    <Dialog>
+    <Dialog open={open()} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <As
           component={Button}
@@ -45,7 +85,7 @@ export default function Invites() {
         >
           <MailboxIcon size={24} class="rotate-0 transition-all" />
           <span class="absolute -right-1 -top-1 rounded-full bg-red-400 px-1 py-0.5 text-xs dark:bg-red-500">
-            {invites.length}
+            {invites().length}
           </span>
           <span class="sr-only">Invites</span>
         </As>
@@ -59,10 +99,22 @@ export default function Invites() {
               <For each={invites()}>
                 {(invite) => (
                   <TableRow>
-                    <TableCell class="font-medium">{invite.team_id}</TableCell>
+                    <TableCell class="font-medium">
+                      {invite.teams?.name}
+                    </TableCell>
                     <TableCell class="flex justify-end gap-2">
-                      <Button variant="ghost">Accept</Button>
-                      <Button variant="destructive">Decline</Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => acceptInvites([invite.team_id])}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => declineInvites([invite.team_id])}
+                      >
+                        Decline
+                      </Button>
                     </TableCell>
                   </TableRow>
                 )}
@@ -71,10 +123,22 @@ export default function Invites() {
           </Table>
         </DialogDescription>
         <DialogFooter>
-          <Button variant="ghost" disabled={invites()?.length == 0}>
+          <Button
+            variant="ghost"
+            disabled={invites()?.length == 0}
+            onClick={() =>
+              acceptInvites(invites()?.map((invite) => invite.team_id))
+            }
+          >
             Accept All
           </Button>
-          <Button variant="destructive" disabled={invites()?.length == 0}>
+          <Button
+            variant="destructive"
+            disabled={invites()?.length == 0}
+            onClick={() =>
+              declineInvites(invites()?.map((invite) => invite.team_id))
+            }
+          >
             Decline All
           </Button>
         </DialogFooter>
