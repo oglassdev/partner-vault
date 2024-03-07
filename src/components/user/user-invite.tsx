@@ -8,8 +8,14 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-solid";
-import { createResource, createSignal } from "solid-js";
+import { Check, Plus } from "lucide-solid";
+import {
+  For,
+  Show,
+  createEffect,
+  createResource,
+  createSignal,
+} from "solid-js";
 import {
   Combobox,
   ComboboxContent,
@@ -24,6 +30,9 @@ import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { showToast } from "../ui/toast";
 import { ProfileRow, handleError } from "~/lib/database/database";
 import { useParams } from "@solidjs/router";
+import { Input } from "../ui/input";
+import { Card, CardContent } from "../ui/card";
+import { SuspenseSpinner } from "../suspense-spinner";
 
 export default function UserInvite() {
   const supabase = useSupabaseContext();
@@ -46,15 +55,12 @@ export default function UserInvite() {
         });
         return [];
       }
-      return (
-        handleError(
-          await supabase
-            .from("profiles")
-            .select()
-            .neq("id", session.user.id)
-            .or(`display_name.ilike.${search()}%,username.ilike.${search()}%`)
-            .limit(12),
-        ) ?? []
+      return handleError(
+        await supabase.rpc("search_invitable_profiles", {
+          search: search(),
+          user_id: session.user.id,
+          current_team_id: team_id,
+        }),
       );
     },
     {
@@ -63,6 +69,10 @@ export default function UserInvite() {
   );
 
   const [selectedProfile, setSelectedProfile] = createSignal<ProfileRow>();
+
+  createEffect(() => {
+    console.log(selectedProfile());
+  });
 
   const handleSubmit = async () => {
     const profile = selectedProfile();
@@ -74,14 +84,14 @@ export default function UserInvite() {
         title: "No session was found.",
         variant: "destructive",
       });
-      return [];
+      setOpen(false);
+      return;
     }
 
-    showToast({
-      title: JSON.stringify(profile),
-      variant: "destructive",
-    });
-    if (profile == null) return;
+    if (profile == null) {
+      setOpen(false);
+      return;
+    }
 
     handleError(
       await supabase.from("invites").insert({
@@ -91,6 +101,9 @@ export default function UserInvite() {
       }),
     );
     setOpen(false);
+    showToast({
+      title: "Invited " + profile.display_name,
+    });
   };
 
   return (
@@ -111,40 +124,48 @@ export default function UserInvite() {
           <DialogTitle>Invite User</DialogTitle>
         </DialogHeader>
         <DialogDescription class="flex flex-col gap-1">
-          <Combobox
-            options={profiles()}
-            optionValue={"id"}
-            optionLabel={"display_name"}
-            value={selectedProfile()}
-            onSelect={setSelectedProfile}
-            defaultFilter={() => true}
-            itemComponent={(props) => (
-              <ComboboxItem item={props.item}>
-                <ComboboxItemLabel class="flex flex-col">
-                  <span>{props.item.rawValue.display_name}</span>
-                  <span class="text-muted-foreground">
-                    @{props.item.rawValue.username}
-                  </span>
-                </ComboboxItemLabel>
-                <ComboboxItemIndicator />
-              </ComboboxItem>
-            )}
-            placeholder="Add tags..."
-          >
-            <ComboboxControl aria-label="Tags">
-              <div class="flex w-full flex-wrap gap-1">
-                <ComboboxInput
-                  onInput={(e) => {
-                    mutate([]);
-                    setSearch(e.currentTarget.value);
-                    refetch();
-                  }}
-                />
-              </div>
-              <ComboboxTrigger />
-            </ComboboxControl>
-            <ComboboxContent class="max-h-64 overflow-auto" />
-          </Combobox>
+          <Input
+            placeholder="Search"
+            onInput={(e) => {
+              setSearch(e.currentTarget.value);
+              refetch();
+            }}
+            autocorrect="off"
+            autocomplete="off"
+            autocapitalize="off"
+          />
+          <Card class="h-64 overflow-auto p-0">
+            <SuspenseSpinner>
+              <CardContent class="m-0 flex flex-col p-2">
+                <Show when={profiles().length == 0}>
+                  <span class="m-auto">No users found.</span>
+                </Show>
+                <For each={profiles()}>
+                  {(profile) => (
+                    <Button
+                      variant="ghost"
+                      class={`flex h-auto w-full flex-row p-0 text-left ${selectedProfile() == profile && "bg-muted"}`}
+                      onClick={() => {
+                        setSelectedProfile(
+                          selectedProfile() == profile ? undefined : profile,
+                        );
+                      }}
+                    >
+                      <div class="flex flex-auto flex-col p-2">
+                        <h3>{profile.display_name}</h3>
+                        <p class="text-muted-foreground font-normal">
+                          @{profile.username}
+                        </p>
+                      </div>
+                      <Show when={selectedProfile() == profile}>
+                        <Check class="text-muted-foreground mx-2 my-auto h-6 w-6 flex-none" />
+                      </Show>
+                    </Button>
+                  )}
+                </For>
+              </CardContent>
+            </SuspenseSpinner>
+          </Card>
           <Button class="w-full" type="submit" onClick={handleSubmit}>
             Invite
           </Button>

@@ -60,7 +60,22 @@ import { filter } from "~/lib/filter";
 export default function Teams() {
   const supabase = useSupabaseContext();
   const [_teams, { refetch }] = createResource(
-    async () => handleError(await supabase.from("teams").select()) ?? [],
+    async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session == null) return [];
+      return (
+        handleError(
+          await supabase
+            .from("user_teams")
+            .select("*, teams(*)")
+            .eq("user_id", session.user.id),
+        )?.flatMap((relation) =>
+          relation.teams != null ? [relation.teams] : [],
+        ) ?? []
+      );
+    },
     {
       initialValue: [],
     },
@@ -89,7 +104,9 @@ export default function Teams() {
   };
 
   const navigate = useNavigate();
+
   const [profile] = createResource(getProfile);
+
   createEffect(() => {
     const p = profile();
     if (p == null) {
@@ -113,7 +130,7 @@ export default function Teams() {
               If you aren't in a team, you can either create one or ask for an
               invite.
             </Help>
-            <Invites />
+            <Invites refresh={refetch} />
             <LogoutButton />
             <TeamCreation refresh={refetch} />
             <DropdownMenu>

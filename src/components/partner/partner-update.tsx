@@ -73,33 +73,14 @@ export function PartnerUpdateForm(props: PartnerDropdownProps) {
   );
   const [tagsValues, setTagsValues] = createSignal<TagRow[]>(props.tags);
 
-  const updateTagRelations = async () => {
-    const delete_values = props.tags
-      .filter((tag) => !tagsValues().includes(tag))
-      .map<PartnerTagRow>((tag) => ({
-        tag_id: tag.id,
-        partner_id: props.partner.id,
-      }));
-    const insert_values = tagsValues()
-      .filter((tag) => !props.tags.includes(tag))
-      .map<PartnerTagRow>((tag) => ({
-        tag_id: tag.id,
-        partner_id: props.partner.id,
-      }));
-
-    handleError(
-      await supabase.rpc("update_partner_tags", {
-        delete_values,
-        insert_values,
-      }),
-    );
-  };
-
   const handleSubmit: SubmitHandler<PartnerUpdateFormType> = async (data) => {
     handleError(
-      await supabase.from("partners").update(data).eq("id", props.partner.id),
+      await supabase.rpc("update_partner_and_tags", {
+        p_partner_id: props.partner.id,
+        partner_details: data,
+        tag_ids: tagsValues().map((tag) => tag.id),
+      }),
     );
-    await updateTagRelations();
     props.refresh();
     showToast({
       title: "Updated partner",

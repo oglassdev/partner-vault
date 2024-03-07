@@ -297,6 +297,46 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_team_invites: {
+        Args: {
+          teams: string[]
+        }
+        Returns: undefined
+      }
+      check_user_in_team: {
+        Args: {
+          team: string
+        }
+        Returns: boolean
+      }
+      insert_partner: {
+        Args: {
+          partner: Json
+          tag_ids: string[]
+        }
+        Returns: undefined
+      }
+      search_invitable_profiles: {
+        Args: {
+          search: string
+          user_id: string
+          current_team_id: string
+        }
+        Returns: {
+          display_name: string
+          id: string
+          public_email: string | null
+          username: string
+        }[]
+      }
+      update_partner_and_tags: {
+        Args: {
+          p_partner_id: string
+          partner_details: Json
+          tag_ids: string[]
+        }
+        Returns: undefined
+      }
       update_partner_tags: {
         Args: {
           delete_values: Json
