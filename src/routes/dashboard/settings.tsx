@@ -54,6 +54,7 @@ export default function Settings() {
   const [reportLoading, setReportLoading] = createSignal(false);
   const generateReport = async () => {
     setReportLoading(true);
+    try {
     const response = await fetch(
       "https://jmdvrevzgaryrzhlzpgd.supabase.co/functions/v1/report_email",
       {
@@ -77,6 +78,9 @@ export default function Settings() {
         title: "Error sending the report",
         variant: "destructive",
       });
+    }
+    } catch (error) {
+      console.log(error)
     }
     setReportLoading(false);
   };

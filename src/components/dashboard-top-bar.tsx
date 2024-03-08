@@ -4,7 +4,7 @@ export default function DashboardTopBar(props: ParentProps) {
   return (
     <div
       class="border-muted sticky top-0 z-50 flex w-full flex-row
-      items-center gap-2 border-b bg-white p-2 dark:bg-black"
+      items-center gap-2 border-b bg-background p-2"
     >
       <span class="mr-auto flex-none px-2 font-semibold">Partner Vault</span>
       {ch()}

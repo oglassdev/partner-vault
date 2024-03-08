@@ -9,26 +9,17 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[lib]
-name = "partner_vault_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
-
 [build-dependencies]
-tauri-build = { version = "2.0.0-alpha", features = [] }
+tauri-build = { version = "2.0.0-beta", features = [] }
 
 [dependencies]
-tauri = { version = "2.0.0-alpha", features = [] }
-tauri-plugin-window = "2.0.0-alpha"
-tauri-plugin-shell = "2.0.0-alpha"
-tauri-plugin-http = "2.0.0-alpha"
-tauri-plugin-process = "2.0.0-alpha"
-tauri-plugin-clipboard-manager = "2.0.0-alpha"
-tauri-plugin-dialog = "2.0.0-alpha"
-serde_json = "1.0"
-serde = { version = "1.0.192", features = ["derive"] }
-portpicker = "0.1.1"
+tauri = { version = "2.0.0-beta", features = [] }
+tauri-plugin-shell = "2.0.0-beta"
+tauri-plugin-http = "2.0.0-beta.2"
+tauri-plugin-process = "2.0.0-alpha.2"
+tauri-plugin-clipboard-manager = "2.0.0-alpha.2"
+tauri-plugin-dialog = "2.0.0-alpha.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-os = "2.0.0-beta.2"
 
-[features]
-# this feature is used for production builds or when `devPath` points to the filesystem
-# DO NOT REMOVE!!
-custom-protocol = ["tauri/custom-protocol"]

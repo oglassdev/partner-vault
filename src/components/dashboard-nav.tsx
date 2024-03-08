@@ -23,6 +23,7 @@ import { showToast } from "./ui/toast";
 import { Database } from "../../database.types";
 import { Skeleton } from "./ui/skeleton";
 import { getUser } from "~/lib/database/supabase-user";
+import { platform } from "@tauri-apps/plugin-os";
 
 export type LinkGroup = {
   name: string | undefined;
@@ -43,59 +44,54 @@ export default function DashboardNav(props: { groups: LinkGroup[] }) {
   const supabase = useSupabaseContext();
   const { team_id } = useParams();
   const navigate = useNavigate();
-
-  const [teams] = createResource<TeamRow[]>(
-    async () => {
-      const { data, error } = await supabase.from("teams").select("*");
-      if (error) {
-        showToast({
-          title: "Error: " + error.code,
-          description: error.message,
-        });
-      }
-      return (
-        data?.map((team) => {
-          return { ...team, disabled: false };
-        }) ?? []
-      );
-    },
-    {
-      initialValue: [],
-    },
-  );
-
+  
   const [user] = createResource(getUser);
 
-  const [team, _setTeam] = createSignal<TeamRow>();
+  const [isMac] = createResource(async () => (await platform()) == "macos", { initialValue: false });
+
+  type SelectOption = {
+    value: string,
+    name: string,
+    disabled: boolean,
+    onPress: () => void
+  }
+
+  const selectOptions: SelectOption[] = [
+    {
+      value: "back",
+      name: "Back",
+      disabled: false,
+      onPress: () => {
+        navigate("/teams")
+      }
+    }
+  ]
+  const [option, setOption] = createSignal<SelectOption>();
+ 
   createEffect(() => {
-    _setTeam(teams().find((t) => t.id == team_id));
-  });
-  const setTeam = (t: TeamRow) => {
-    if (t == null) return;
-    navigate("/teams");
-    navigate("/team/" + t?.id);
-  };
+    option()?.onPress();
+  })
 
   return (
     <nav
       class="
       border-muted flex w-full flex-none flex-row
-      gap-1 border-t bg-opacity-15 p-2 transition-all sm:h-full sm:w-64 sm:flex-col sm:border-r sm:pt-8
+      gap-1 border-t bg-opacity-15 p-2 transition-all sm:h-full sm:w-64 sm:flex-col sm:border-r 
       "
     >
       <div class="flex flex-none flex-row gap-2">
-        <Select<TeamRow>
-          value={team()}
-          onChange={setTeam}
-          options={teams()}
-          optionValue={"id"}
+        <Select<SelectOption>
+          value={option()}
+          onChange={setOption}
+          options={selectOptions}
+          optionValue={"value"}
           optionTextValue={"name"}
           optionDisabled={"disabled"}
           placeholder="Select a team…"
           class="flex-auto"
           itemComponent={(props) => {
             return (
-              <SelectItem item={props.item}>
+              <SelectItem class="pl-2" item={props.item}>
                 {props.item.rawValue.name}
               </SelectItem>
             );
@@ -103,16 +99,14 @@ export default function DashboardNav(props: { groups: LinkGroup[] }) {
         >
           <SelectTrigger
             aria-label="Team"
-            class="hidden h-9 flex-none items-center overflow-hidden text-ellipsis text-left sm:flex"
+            class={`hidden h-9 flex-none items-center overflow-hidden text-ellipsis text-left sm:flex ${isMac() ? "mt-8" : "mt-0"}`}
           >
-            <SelectValue<TeamRow> class="max-w-52 truncate">
-              {(state) => state.selectedOption()?.name}
-            </SelectValue>
+            <span>{team_id}</span>
           </SelectTrigger>
           <SelectContent />
         </Select>
       </div>
-      <span class="border-t-muted -mx-2 my-2 hidden border-t sm:block" />
+      <span class="border-t-muted -mx-2 my-1 hidden border-t sm:block" />
       <div class="flex w-full items-center gap-2 p-1 sm:flex-col sm:items-start sm:gap-1 sm:p-0">
         <For each={props.groups}>
           {(group) => (
