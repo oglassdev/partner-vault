@@ -55,6 +55,7 @@ import { handleError } from "~/lib/database/database";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import TeamCreation from "~/components/teams/team-creation";
 import { filter } from "~/lib/filter";
+import { platform } from "@tauri-apps/plugin-os";
 
 export default function Teams() {
   const supabase = useSupabaseContext();
@@ -106,6 +107,10 @@ export default function Teams() {
 
   const [profile] = createResource(getProfile);
 
+  const [isMac] = createResource(async () => (await platform()) == "macos", {
+    initialValue: false,
+  });
+
   createEffect(() => {
     const p = profile();
     if (p == null) {
@@ -119,10 +124,9 @@ export default function Teams() {
       <main class="flex h-full w-full flex-col">
         <header>
           <div
-            class="border-muted bg-background sticky top-0 z-50 flex
-          w-full flex-row items-center justify-center gap-2 border-b p-2"
+            class={`border-muted bg-background sticky top-0 z-50 flex
+              w-full flex-row items-center justify-center gap-1.5 border-b p-2 ${isMac() ? "pl-[4.25rem]" : ""}`}
           >
-            <span class="hidden w-auto min-w-14 md:flex" />
             <Search value={search()} setValue={setSearch} />
             <ColorModeToggle />
             <Help>
