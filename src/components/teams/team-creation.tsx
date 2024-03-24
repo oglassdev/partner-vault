@@ -34,7 +34,6 @@ export function TeamCreationForm(
 
   const handleSubmit: SubmitHandler<TeamCreationFormType> = async (data) => {
     const u = user();
-    console.log("submitting");
     if (u == null) return;
     const team = handleError(
       await supabase

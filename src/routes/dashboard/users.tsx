@@ -9,7 +9,13 @@ import Help from "~/components/help";
 import Search from "~/components/search";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +37,17 @@ import { sort } from "~/lib/sort";
 export default function Users() {
   const { team_id } = useParams();
   const supabase = useSupabaseContext();
+  const [owner] = createResource(
+    async () =>
+      handleError(
+        await supabase
+          .from("teams")
+          .select("owner")
+          .eq("id", team_id)
+          .limit(1)
+          .maybeSingle(),
+      )?.owner,
+  );
   const [_users, { refetch: refetchUsers }] = createResource(
     async () =>
       handleError(
@@ -151,10 +168,18 @@ export default function Users() {
                 {(user) => (
                   <Card class="flex flex-col">
                     <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle class="font-medium">{user.username}</CardTitle>
+                      <CardTitle class="flex flex-col font-medium">
+                        <span class="mt-auto">{user.display_name}</span>
+                        <span class="text-muted-foreground text-md font-normal">
+                          @{user.username}
+                        </span>
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent class="flex flex-col">
-                      {user.public_email}
+                    <CardContent class="flex flex-auto flex-col">
+                      {owner() == user.id && (
+                        <span class="font-semibold">Owner</span>
+                      )}
+                      <span class="mt-auto">{user.public_email}</span>
                     </CardContent>
                   </Card>
                 )}

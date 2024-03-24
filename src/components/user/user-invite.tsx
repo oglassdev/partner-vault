@@ -60,10 +60,6 @@ export default function UserInvite() {
 
   const [selectedProfile, setSelectedProfile] = createSignal<ProfileRow>();
 
-  createEffect(() => {
-    console.log(selectedProfile());
-  });
-
   const handleSubmit = async () => {
     const profile = selectedProfile();
     const {
@@ -94,6 +90,7 @@ export default function UserInvite() {
     showToast({
       title: "Invited " + profile.display_name,
     });
+    refetch();
   };
 
   return (
