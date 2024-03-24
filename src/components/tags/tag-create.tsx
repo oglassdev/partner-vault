@@ -34,7 +34,7 @@ export type TagCreateProps = {
 export function PartnerCreateForm(
   props: TagCreateProps & { onOpenChange: Setter<boolean> },
 ) {
-  const [updateForm, { Field, Form }] = createForm<TagCreateFormType>({
+  const [form, { Field, Form }] = createForm<TagCreateFormType>({
     initialValues: {
       name: "",
       color: 0,
@@ -101,7 +101,7 @@ export function PartnerCreateForm(
                   <HexColorPicker
                     color={numberToHex(field.value ?? 0)}
                     onChange={(color) => {
-                      setValue(updateForm, "color", hexToNumber(color));
+                      setValue(form, "color", hexToNumber(color));
                     }}
                   />
                   <Input
@@ -117,7 +117,7 @@ export function PartnerCreateForm(
         </Col>
         <Col span={1} spanMd={2}>
           <Button type="submit" class="w-full">
-            Update
+            Create
           </Button>
         </Col>
       </Grid>

@@ -1,6 +1,5 @@
 import Help from "~/components/help.tsx";
 import ColorModeToggle from "~/components/color-mode-toggle.tsx";
-import { Transition } from "solid-transition-group";
 import {
   Tabs,
   TabsContent,
@@ -27,6 +26,7 @@ export default function Index() {
     if (user.loading || u == null) return;
     navigate("/teams");
   });
+
   return (
     <main class="flex h-screen w-full flex-row">
       <div class="dark:bg-muted hidden flex-auto flex-col bg-gray-200 p-8 sm:flex dark:border-r">

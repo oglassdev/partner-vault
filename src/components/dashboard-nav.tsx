@@ -5,25 +5,21 @@ import {
   For,
   Suspense,
   createEffect,
+  createMemo,
   createResource,
   createSignal,
 } from "solid-js";
 import { JSX } from "solid-js";
 import { Select } from "~/components/ui/select";
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import { SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 import LogoutButton from "./logout-button";
 import ColorModeToggle from "./color-mode-toggle";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
-import { showToast } from "./ui/toast";
 import { Database } from "../../database.types";
 import { Skeleton } from "./ui/skeleton";
 import { getUser } from "~/lib/database/supabase-user";
 import { platform } from "@tauri-apps/plugin-os";
+import { handleError } from "~/lib/database/database";
 
 export type LinkGroup = {
   name: string | undefined;
@@ -36,25 +32,23 @@ export type Link = {
   icon: JSX.Element;
 };
 export default function DashboardNav(props: { groups: LinkGroup[] }) {
-  type TeamRow = Database["public"]["Tables"]["teams"]["Row"] & {
-    disabled: boolean;
-  };
-
   const location = useLocation();
   const supabase = useSupabaseContext();
   const { team_id } = useParams();
   const navigate = useNavigate();
-  
+
   const [user] = createResource(getUser);
 
-  const [isMac] = createResource(async () => (await platform()) == "macos", { initialValue: false });
+  const [isMac] = createResource(async () => (await platform()) == "macos", {
+    initialValue: false,
+  });
 
   type SelectOption = {
-    value: string,
-    name: string,
-    disabled: boolean,
-    onPress: () => void
-  }
+    value: string;
+    name: string;
+    disabled: boolean;
+    onPress: () => void;
+  };
 
   const selectOptions: SelectOption[] = [
     {
@@ -62,21 +56,32 @@ export default function DashboardNav(props: { groups: LinkGroup[] }) {
       name: "Back",
       disabled: false,
       onPress: () => {
-        navigate("/teams")
-      }
-    }
-  ]
+        navigate("/teams");
+      },
+    },
+  ];
   const [option, setOption] = createSignal<SelectOption>();
- 
+
+  const [name] = createResource(async () => {
+    return handleError(
+      await supabase
+        .from("teams")
+        .select("name")
+        .eq("id", team_id)
+        .limit(1)
+        .maybeSingle(),
+    )?.name;
+  });
+
   createEffect(() => {
     option()?.onPress();
-  })
+  });
 
   return (
     <nav
       class="
       border-muted flex w-full flex-none flex-row
-      gap-1 border-t bg-opacity-15 p-2 transition-all sm:h-full sm:w-64 sm:flex-col sm:border-r 
+      gap-1 border-t bg-opacity-15 p-2 transition-all sm:h-full sm:w-64 sm:flex-col sm:border-r
       "
     >
       <div class="flex flex-none flex-row gap-2">
@@ -99,9 +104,9 @@ export default function DashboardNav(props: { groups: LinkGroup[] }) {
         >
           <SelectTrigger
             aria-label="Team"
-            class={`hidden h-9 flex-none items-center overflow-hidden text-ellipsis text-left sm:flex ${isMac() ? "mt-8" : "mt-0"}`}
+            class={`hidden h-9 flex-none items-center overflow-hidden text-ellipsis text-left sm:flex ${isMac() ? "mt-5" : "mt-0"}`}
           >
-            <span>{team_id}</span>
+            <span>{name() ?? ""}</span>
           </SelectTrigger>
           <SelectContent />
         </Select>

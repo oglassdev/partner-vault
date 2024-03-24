@@ -6,7 +6,6 @@ import {
 } from "@modular-forms/solid";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import {
-  PartnerTagRow,
   PartnerUpdate as PartnerUpdateDb,
   TagRow,
   handleError,

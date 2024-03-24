@@ -1,6 +1,11 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { RefreshCw } from "lucide-solid";
-import { createResource, createSignal } from "solid-js";
+import { Loader, RefreshCw } from "lucide-solid";
+import {
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+} from "solid-js";
 import DashboardTopBar from "~/components/dashboard-top-bar";
 import Help from "~/components/help";
 import { SuspenseSpinner } from "~/components/suspense-spinner";
@@ -19,8 +24,7 @@ import { showToast } from "~/components/ui/toast";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { handleError } from "~/lib/database/database";
 import { getUser } from "~/lib/database/supabase-user";
-import { fetch } from "@tauri-apps/plugin-http";
-import { TbLoader } from "solid-icons/tb";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function Settings() {
   const { team_id } = useParams();
@@ -43,6 +47,8 @@ export default function Settings() {
   );
   const [deleteInput, setDeleteInput] = createSignal("");
 
+  const [name, setName] = createSignal("");
+
   const deleteTeam = async () => {
     handleError(await supabase.from("teams").delete().eq("id", team_id));
     navigate("/teams");
@@ -54,35 +60,38 @@ export default function Settings() {
   const [reportLoading, setReportLoading] = createSignal(false);
   const generateReport = async () => {
     setReportLoading(true);
+    const token = (await supabase.auth.getSession()).data.session?.access_token;
+    if (token == null) return;
     try {
-    const response = await fetch(
-      "https://jmdvrevzgaryrzhlzpgd.supabase.co/functions/v1/report_email",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          teamId: team_id,
-        }),
-        connectTimeout: 5,
-        headers: {
-          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-          "Content-Type": "application/json",
-        },
-      },
-    );
-    if (response.ok) {
+      await invoke("report_email", { teamId: team_id, token });
       showToast({
-        title: "Report sent to your email",
+        title: "Email report successfully sent",
+        description: "Check your email",
       });
-    } else {
+    } catch (error) {
       showToast({
-        title: "Error sending the report",
+        title: "Error sending email:",
+        description: error as any as string,
         variant: "destructive",
       });
     }
-    } catch (error) {
-      console.log(error)
-    }
     setReportLoading(false);
+  };
+
+  const isOwner = createMemo(() => user()?.id == team()?.owner);
+
+  createEffect(() => {
+    setName(team()?.name ?? "");
+  });
+
+  const updateName = async () => {
+    handleError(
+      await supabase.from("teams").update({ name: name() }).eq("id", team_id),
+    );
+    showToast({
+      title: "Updated name to " + name(),
+    });
+    refetchSettings();
   };
 
   return (
@@ -104,34 +113,42 @@ export default function Settings() {
       </DashboardTopBar>
       <SuspenseSpinner>
         <main class="flex flex-auto flex-col overflow-auto p-2">
-          <Label for="name" class="text-muted-foreground pb-2">
+          <Label for="name" class="text-muted-foreground pb-1">
             Name
           </Label>
           <div class="flex w-full flex-none flex-row gap-2">
-            <Input placeholder="Team name" value={team()?.name} id="name" />
-            <Button>Save</Button>
-          </div>
-          <div class="mt-4 flex w-full flex-none flex-col">
-            <Label for="report" class="text-muted-foreground pb-2">
-              Reports
-            </Label>
-            <Button onClick={generateReport} disabled={reportLoading()}>
-              {reportLoading() && (
-                <TbLoader class="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Generate a report
+            <Input
+              placeholder={team()?.name}
+              value={name()}
+              disabled={!isOwner()}
+              onInput={(e) => setName(e.currentTarget.value)}
+              id="name"
+            />
+            <Button disabled={!isOwner()} onClick={updateName}>
+              Save
             </Button>
           </div>
+          <Label for="report" class="text-muted-foreground mt-4 pb-1">
+            Reports
+          </Label>
+          <Button
+            class="w-48"
+            onClick={generateReport}
+            disabled={reportLoading()}
+          >
+            {reportLoading() && <Loader class="mr-2 h-4 w-4 animate-spin" />}
+            Generate a report
+          </Button>
 
           <span class="bg-muted my-3 h-[1px] w-full" />
-          <Label class="text-destructive pb-2">Danger Zone</Label>
+          <Label class="text-destructive pb-1">Danger Zone</Label>
           <Dialog>
             <DialogTrigger
               as={Button}
               id="delete"
               class="w-32"
               variant="destructive"
-              disabled={user()?.id != team()?.owner}
+              disabled={!isOwner()}
             >
               Delete Team
             </DialogTrigger>

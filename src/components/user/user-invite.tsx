@@ -16,16 +16,6 @@ import {
   createResource,
   createSignal,
 } from "solid-js";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxControl,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxItemIndicator,
-  ComboboxItemLabel,
-  ComboboxTrigger,
-} from "../ui/combobox";
 import { useSupabaseContext } from "~/lib/context/supabase-context";
 import { showToast } from "../ui/toast";
 import { ProfileRow, handleError } from "~/lib/database/database";

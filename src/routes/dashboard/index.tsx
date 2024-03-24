@@ -82,7 +82,7 @@ export default function Dashboard() {
         </Help>
       </DashboardTopBar>
       <SuspenseSpinner>
-        <main class="flex flex-auto w-full flex-col">
+        <main class="flex w-full flex-auto flex-col">
           <Grid cols={1} colsMd={2} colsLg={3} class="gap-2 p-2">
             <Card>
               <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">

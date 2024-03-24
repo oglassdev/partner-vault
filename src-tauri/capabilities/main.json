@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/desktop-schema.json",
+  "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
   "windows": ["main"],
@@ -16,8 +16,8 @@
     {
       "identifier": "http:default",
       "allow": [
-        { "url": "https://jmdvrevzgaryrzhlzpgd.supabase.co/*" },
-        { "url": "https://jmdvrevzgaryrzhlzpgd.supabase.co/**" } 
+        { "url": "https://*.supabase.co/*" },
+        { "url": "http://*.supabase.co/*" }
       ]
     }
   ]
