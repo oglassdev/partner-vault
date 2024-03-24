@@ -119,8 +119,8 @@ export default function Teams() {
       <main class="flex h-full w-full flex-col">
         <header>
           <div
-            class="border-muted sticky top-0 z-50 flex w-full flex-row
-          items-center justify-center gap-2 border-b bg-white p-2 dark:bg-black"
+            class="border-muted bg-background sticky top-0 z-50 flex
+          w-full flex-row items-center justify-center gap-2 border-b p-2"
           >
             <span class="hidden w-auto min-w-14 md:flex" />
             <Search value={search()} setValue={setSearch} />
